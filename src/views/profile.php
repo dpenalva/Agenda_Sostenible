@@ -11,6 +11,12 @@
 </head>
 
 <body>
+    <!-- Agregar botón de menú y overlay -->
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="menu-overlay"></div>
+
     <div class="container-fluid d-flex main-content-wrapper">
         <!-- Sidebar (común en todas las páginas) -->
         <aside class="sidebar p-4 d-flex flex-column align-items-center">
@@ -89,6 +95,8 @@
         </aside>
     </div>
 
+    <!-- Agregar el script del menú antes de los otros scripts -->
+    <script src="../../public/js/menu.js"></script>
     <script src="../../public/js/profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>

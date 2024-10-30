@@ -371,3 +371,211 @@ body {
     width: 55px;
     height: 60px;
 }
+
+/* Media Queries */
+@media screen and (max-width: 1200px) {
+    .main-content-wrapper {
+        max-width: 100%;
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .main-content-wrapper {
+        flex-direction: column;
+        padding-top: 60px; /* Espacio para el botón de menú */
+    }
+
+    /* Ajustes del sidebar */
+    .sidebar {
+        position: fixed;
+        left: -250px; /* Oculto por defecto */
+        top: 0;
+        height: 100vh;
+        width: 250px !important; /* Forzar ancho fijo */
+        margin: 0;
+        z-index: 999;
+        transition: left 0.3s ease;
+        padding: 20px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Ajustes del contenido principal */
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Ajustes del sidebar derecho */
+    .sidebar-right {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Mostrar botón de menú */
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+        background: #13171a;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    /* Overlay mejorado */
+    .menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+        backdrop-filter: blur(2px);
+    }
+
+    .menu-overlay.active {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .profile-banner {
+        height: 150px;
+    }
+
+    .profile-avatar-large {
+        width: 100px;
+        height: 100px;
+        bottom: -50px;
+    }
+
+    .profile-info {
+        padding-top: 60px;
+    }
+
+    #profile-tabs .nav-link {
+        font-size: 0.8em;
+        padding: 8px;
+    }
+
+    .tweet {
+        padding: 10px;
+    }
+
+    .main-content-wrapper {
+        padding: 60px 10px 10px 10px;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    /* Ajustes adicionales para móviles */
+    .sidebar {
+        width: 80% !important; /* Más ancho en móviles */
+        max-width: 250px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .main-content-wrapper {
+        padding: 60px 5px 5px 5px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+}
+
+/* Asegurar que el sidebar esté visible en pantallas grandes */
+@media screen and (min-width: 993px) {
+    .sidebar {
+        position: relative !important;
+        left: 0 !important;
+        width: 250px !important;
+    }
+
+    .menu-toggle {
+        display: none !important;
+    }
+
+    .menu-overlay {
+        display: none !important;
+    }
+}
+
+/* Estilos del botón de menú */
+.menu-toggle {
+    display: none; /* Oculto por defecto */
+    background: #13171a;
+    border: 2px solid #53d5cd;
+    border-radius: 12px;
+    width: 45px;
+    height: 45px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(83, 213, 205, 0.2);
+}
+
+/* Icono dentro del botón */
+.menu-toggle .fas {
+    color: #53d5cd;
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* Animación del botón cuando está activo */
+.menu-toggle.active {
+    background: #53d5cd;
+    transform: rotate(90deg);
+}
+
+.menu-toggle.active .fas {
+    color: #13171a;
+}
+
+/* Efectos hover */
+.menu-toggle:hover {
+    background: #1a1f23;
+    box-shadow: 0 4px 15px rgba(83, 213, 205, 0.3);
+}
+
+/* Efecto de pulso */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(83, 213, 205, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(83, 213, 205, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(83, 213, 205, 0);
+    }
+}
+
+/* Aplicar pulso solo cuando no está activo */
+.menu-toggle:not(.active) {
+    animation: pulse 2s infinite;
+}
+
+/* Media query para móviles */
+@media screen and (max-width: 992px) {
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
