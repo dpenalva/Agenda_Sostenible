@@ -1,0 +1,331 @@
+/* General Styles */
+body {
+    background-color: #0a0b0d;
+    color: #bfc0c2;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Wrapper for consistent width */
+.main-content-wrapper {
+    max-width: 1200px;
+    min-height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    padding: 20px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #13171a;
+    width: 250px;
+    padding-top: 20px;
+    color: #bfc0c2;
+    border-radius: 10px;
+}
+
+.sidebar .icon {
+    font-size: 36px;
+    color: #3c9290;
+    margin-bottom: 20px;
+}
+
+.sidebar .nav-link {
+    color: #bfc0c2;
+    font-size: 1.1em;
+    padding: 10px 15px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background-color: #0a0b0d;
+    color: #53d5cd;
+}
+
+.logout-btn {
+    background-color: #3c9290;
+    color: #0a0b0d;
+    width: 100%;
+    padding: 10px;
+    border-radius: 25px;
+    margin-top: auto;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #13171a;
+    color: #53d5cd;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #13171a;
+    margin: 0 20px;
+}
+
+.main-content h2 {
+    font-size: 24px;
+    color: #bfc0c2;
+}
+
+/* Profile Banner */
+.profile-banner {
+    height: 200px;
+    background-color: #0a0b0d;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    z-index: 1; /* Mantener el banner por debajo del avatar */
+}
+
+.cover-photo {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+/* Profile Avatar positioned above everything */
+.profile-avatar-large {
+    width: 130px; /* Tamaño prominente */
+    height: 130px;
+    position: absolute;
+    bottom: -60px; /* Ajuste para que sobresalga más del banner */
+    left: 30px; /* Espacio desde el lado izquierdo */
+    border: 3px solid #0a0b0d; /* Borde para resaltar el avatar */
+    border-radius: 50%;
+    background-color: #1f2833;
+    z-index: 1; /* Asegura que esté encima del banner y del contenido */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6); /* Sombra para destacarlo */
+
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.profile-info {
+    padding-top: 60px; /* Espacio adicional para compensar el avatar superpuesto */
+}
+
+.profile-info h3 {
+    font-size: 1.5em;
+    color: #bfc0c2;
+}
+
+.profile-info p {
+    margin: 0;
+    color: #6a7077;
+}
+
+.profile-bio a {
+    color: #53d5cd;
+    text-decoration: none;
+}
+
+.profile-bio a:hover {
+    text-decoration: underline;
+}
+
+.followers-count p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #bfc0c2;
+}
+
+.profile-edit-btn {
+    background-color: transparent;
+    border: 1px solid #53d5cd;
+    color: #53d5cd;
+    border-radius: 20px;
+    transition: background-color 0.3s, color 0.3s;
+    padding: 5px 15px;
+    font-size: 0.9em;
+}
+
+.profile-edit-btn:hover {
+    background-color: #53d5cd;
+    color: #0a0b0d;
+}
+
+/* Tab Styles */
+#profile-tabs .nav-link {
+    color: #6a7077;
+}   
+
+#profile-tabs .nav-link {
+    color: #6a7077;
+    padding: 10px;
+    transition: background-color 0.3s;
+    font-size: 0.9em;
+}
+
+#profile-tabs .nav-link:hover,
+#profile-tabs .nav-link.active {
+    background-color: #53d5cd;
+    color: #0a0b0d;
+    border-bottom: 3px solid #53d5cd;
+}
+
+/* Right Sidebar */
+.sidebar-right {
+    background-color: #13171a;
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.sidebar-right h5 {
+    color: #bfc0c2;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+/* Calendar */
+#calendar {
+    background-color: #0a0b0d;
+    padding: 20px;
+    border-radius: 10px;
+    color: #bfc0c2;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+#calendar h4 {
+    font-size: 1.2em;
+    color: #53d5cd;
+    margin-bottom: 15px;
+}
+
+#calendar .month-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #53d5cd;
+    font-weight: bold;
+    font-size: 1em;
+    margin-bottom: 10px;
+}
+
+#calendar .month-control button {
+    background: none;
+    border: none;
+    color: #53d5cd;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0;
+}
+
+#calendar table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+#calendar th {
+    color: #53d5cd;
+    padding-bottom: 8px;
+}
+
+#calendar td {
+    padding: 8px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+#calendar td:hover {
+    background-color: #53d5cd;
+    color: #0a0b0d;
+}
+
+#calendar .today {
+    background-color: #53d5cd;
+    color: #0a0b0d;
+    font-weight: bold;
+}
+
+/* Tweets Section */
+.tweet {
+    background-color: #0a0b0d;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+    color: #bfc0c2;
+}
+
+.tweet p {
+    margin: 0;
+    font-size: 1em;
+}
+
+.tweet .text-muted {
+    font-size: 0.8em;
+    color: #6a7077;
+    margin-top: 10px;
+}
+
+.tweet img {
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* Personalización del Modal */
+.modal-content {
+    background-color: #13171a;
+    border-radius: 10px;
+    max-width: 400px;
+}
+
+.modal-body i.fab.fa-twitter {
+    color: #53d5cd;
+}
+
+.modal-body h3 {
+    color: #bfc0c2;
+}
+
+.modal-footer p {
+    font-size: 0.9em;
+    color: #6a7077;
+}
+
+.modal-footer a {
+    color: #53d5cd;
+}
+
+.btn-outline-light {
+    border: 1px solid #bfc0c2;
+    color: #bfc0c2;
+}
+
+.btn-light {
+    color: #0a0b0d;
+    font-weight: bold;
+}
+
+/* Button Styles */
+.logout-btn, .profile-edit-btn {
+    background-color: #45a29e;
+    color: #0b0c10;
+}
+
+.logout-btn:hover, .profile-edit-btn:hover {
+    background-color: #66fcf1;
+    color: #0b0c10;
+}
+
+.logo1{
+    border-radius: 25px;
+    width: 55px;
+    height: 60px;
+}
