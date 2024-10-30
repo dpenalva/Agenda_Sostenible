@@ -37,9 +37,9 @@
         </div>
 
             <nav class="nav flex-column w-100">
-                <a href="index.html" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
-                <a href="events.html" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
-                <a href="profile.html" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
+                <a href="/src/views/index.php" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
+                <a href="/src/views/events.php" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
+                <a href="/src/views/profile.php" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
             </nav>
             <button id="logout-button" class="btn logout-btn mt-4 w-100">Cerrar Sesión</button>
         </aside>
@@ -79,9 +79,9 @@
         </aside>
     </div>
 
-    <script src="script.js"></script>
+    <script src="../../public/js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script src="calendar.js"></script>
+    <script src="../../public/js/calendar.js"></script>
 </body>
 </html>
