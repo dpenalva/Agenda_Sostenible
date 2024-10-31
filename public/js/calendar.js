@@ -4,95 +4,160 @@ class Calendar {
         this.currentMonth = this.date.getMonth();
         this.currentYear = this.date.getFullYear();
         this.monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        this.init();
+                          "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        this.render();
+        this.addEventListeners();
     }
 
-    init() {
-        this.renderCalendar();
-        this.addNavigationListeners();
-    }
-
-    renderCalendar() {
+    render() {
         const calendar = document.getElementById('calendar');
-        const firstDay = new Date(this.currentYear, this.currentMonth, 1);
-        const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
-        const startingDay = firstDay.getDay();
-        const totalDays = lastDay.getDate();
+        if (!calendar) return;
 
-        let calendarHTML = `
-            <div class="calendar-header d-flex justify-content-between align-items-center mb-4">
-                <button class="btn-calendar" id="prevMonth">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <div class="calendar-title">
-                    <span class="month">${this.monthNames[this.currentMonth]}</span>
-                    <span class="year">${this.currentYear}</span>
-                </div>
-                <button class="btn-calendar" id="nextMonth">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+        const savedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+        
+        let html = `
+            <div class="calendar-header">
+                <button class="btn btn-sm text-white" id="prevMonth">&lt;</button>
+                <h5 class="mb-0">${this.monthNames[this.currentMonth]} ${this.currentYear}</h5>
+                <button class="btn btn-sm text-white" id="nextMonth">&gt;</button>
             </div>
-            <div class="calendar-body">
-                <div class="calendar-weekdays">
-                    <div>Do</div>
-                    <div>Lu</div>
-                    <div>Ma</div>
-                    <div>Mi</div>
-                    <div>Ju</div>
-                    <div>Vi</div>
-                    <div>Sa</div>
-                </div>
-                <div class="calendar-days">
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sá</th><th>Do</th>
+                    </tr>
+                </thead>
+                <tbody>
         `;
 
-        // Días vacíos antes del primer día del mes
-        for (let i = 0; i < startingDay; i++) {
-            calendarHTML += '<div class="calendar-day empty"></div>';
+        let firstDay = new Date(this.currentYear, this.currentMonth, 1);
+        let startingDay = firstDay.getDay() || 7; // Ajustar para que la semana empiece en lunes
+        startingDay = startingDay === 1 ? 7 : startingDay - 1;
+
+        let monthLength = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+        let day = 1;
+        
+        for (let i = 0; i < 6; i++) {
+            html += '<tr>';
+            for (let j = 1; j <= 7; j++) {
+                if (i === 0 && j < startingDay || day > monthLength) {
+                    html += '<td></td>';
+                } else {
+                    const currentDate = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const dateEvents = savedEvents.filter(event => event.date === currentDate);
+                    
+                    html += `
+                        <td class="${dateEvents.length > 0 ? 'has-event' : ''}" data-date="${currentDate}">
+                            <span class="day-number">${day}</span>
+                            <div class="event-indicators">
+                                ${dateEvents.map(() => '<div class="event-dot"></div>').join('')}
+                            </div>
+                            ${dateEvents.length > 0 ? `
+                                <div class="event-tooltip">
+                                    <div class="tooltip-header">Eventos (${dateEvents.length})</div>
+                                    ${dateEvents.map(event => `
+                                        <div class="tooltip-event">
+                                            <span class="event-time">${event.time}</span>
+                                            <span class="event-title">${event.title}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </td>
+                    `;
+                    day++;
+                }
+            }
+            html += '</tr>';
+            if (day > monthLength) break;
         }
 
-        // Días del mes
-        for (let day = 1; day <= totalDays; day++) {
-            const currentDate = new Date();
-            const isToday = day === currentDate.getDate() && 
-                          this.currentMonth === currentDate.getMonth() && 
-                          this.currentYear === currentDate.getFullYear();
-            
-            calendarHTML += `
-                <div class="calendar-day${isToday ? ' today' : ''}">
-                    <span>${day}</span>
-                </div>
-            `;
-        }
-
-        calendarHTML += '</div></div>';
-        calendar.innerHTML = calendarHTML;
+        html += '</tbody></table>';
+        calendar.innerHTML = html;
     }
 
-    addNavigationListeners() {
-        document.getElementById('prevMonth').addEventListener('click', () => {
+    addEventListeners() {
+        document.getElementById('prevMonth')?.addEventListener('click', () => {
             this.currentMonth--;
             if (this.currentMonth < 0) {
                 this.currentMonth = 11;
                 this.currentYear--;
             }
-            this.renderCalendar();
-            this.addNavigationListeners();
+            this.render();
         });
 
-        document.getElementById('nextMonth').addEventListener('click', () => {
+        document.getElementById('nextMonth')?.addEventListener('click', () => {
             this.currentMonth++;
             if (this.currentMonth > 11) {
                 this.currentMonth = 0;
                 this.currentYear++;
             }
-            this.renderCalendar();
-            this.addNavigationListeners();
+            this.render();
         });
+
+        // Añadir listeners para los botones de eliminar eventos
+        document.querySelectorAll('.remove-event-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const eventData = {
+                    title: button.dataset.title,
+                    date: button.dataset.date,
+                    time: button.dataset.time
+                };
+                this.removeEvent(eventData);
+            });
+        });
+    }
+
+    removeEvent(eventData) {
+        let savedEvents = JSON.parse(localStorage.getItem('calendarEvents') || '[]');
+        savedEvents = savedEvents.filter(event => 
+            !(event.title === eventData.title && 
+              event.date === eventData.date && 
+              event.time === eventData.time)
+        );
+        localStorage.setItem('calendarEvents', JSON.stringify(savedEvents));
+        
+        // Actualizar el estado del botón "Me interesa" en el feed
+        const interestBtn = document.querySelector(`.interest-btn[data-event-title="${eventData.title}"][data-event-date="${eventData.date}"]`);
+        if (interestBtn) {
+            interestBtn.classList.remove('btn-primary');
+            interestBtn.classList.add('btn-outline-primary');
+        }
+        
+        this.render();
+    }
+
+    createEventTooltip(events) {
+        if (events.length === 0) return '';
+        
+        return `
+            <div class="event-tooltip">
+                <div class="tooltip-header">Eventos del día</div>
+                ${events.map(event => `
+                    <div class="tooltip-event">
+                        <div class="event-time">${event.time}</div>
+                        <div class="event-title">${event.title}</div>
+                        <button class="remove-event-btn" 
+                                data-title="${event.title}"
+                                data-date="${event.date}"
+                                data-time="${event.time}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
     }
 }
 
-// Inicializar el calendario cuando se carga el documento
+// Función para actualizar el calendario
+function updateCalendar() {
+    const calendarInstance = new Calendar();
+    calendarInstance.render();
+}
+
+// Inicializar el calendario
 document.addEventListener('DOMContentLoaded', () => {
     new Calendar();
 });

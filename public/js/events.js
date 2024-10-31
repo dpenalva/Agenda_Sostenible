@@ -1,61 +1,45 @@
 document.addEventListener('DOMContentLoaded', function() {
     const eventForm = document.getElementById('createEventForm');
-    const dropZone = document.querySelector('.drop-zone');
     const imageInput = document.getElementById('eventImage');
     const imagePreview = document.getElementById('imagePreview');
     const previewImg = imagePreview.querySelector('img');
+    const eventsFeed = document.querySelector('.events-feed');
+    const dropZone = document.getElementById('dropZone');
 
-    // Manejar drag & drop
-    dropZone.addEventListener('click', () => imageInput.click());
-    
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
+    console.log('EventsFeed element:', eventsFeed);
 
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
+    // Asegurarse de que el click en cualquier parte de la zona active el input
+    if (dropZone) {
+        dropZone.addEventListener('click', function(e) {
+            imageInput.click(); // Esto abrirá el explorador de archivos
+        });
+    }
 
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        
-        if (e.dataTransfer.files.length) {
-            handleImageUpload(e.dataTransfer.files[0]);
-        }
-    });
-
-    // Manejar selección de archivo
-    imageInput.addEventListener('change', (e) => {
-        if (e.target.files.length) {
-            handleImageUpload(e.target.files[0]);
-        }
-    });
-
-    // Función para manejar la imagen
-    function handleImageUpload(file) {
-        if (file && file.type.startsWith('image/')) {
+    // Manejar la selección de archivo
+    imageInput.addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = function(e) {
                 previewImg.src = e.target.result;
                 imagePreview.classList.remove('d-none');
                 dropZone.style.display = 'none';
             }
             reader.readAsDataURL(file);
         }
-    }
+    });
 
-    // Manejar envío del formulario
+    // Prevenir que el input file se active dos veces
+    imageInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Manejo del formulario
     eventForm.addEventListener('submit', async function(e) {
         e.preventDefault();
+        console.log('Formulario enviado');
         
-        // Validar que haya una imagen
-        if (!previewImg.src) {
-            alert('Por favor, selecciona una imagen para el evento');
-            return;
-        }
-        
+        // Recoger los datos del formulario
         const eventData = {
             title: document.getElementById('eventTitle').value,
             description: document.getElementById('eventDescription').value,
@@ -64,19 +48,27 @@ document.addEventListener('DOMContentLoaded', function() {
             location: document.getElementById('eventLocation').value,
             capacity: document.getElementById('eventCapacity').value,
             event_type: document.getElementById('eventType').value,
-            image_url: previewImg.src,
+            image_url: previewImg.src || null,
             username: 'Usuario Actual',
             created_at: new Date().toISOString()
         };
 
-        // Crear y añadir la tarjeta del evento
+        console.log('Datos del evento:', eventData);
+
+        // Crear la tarjeta del evento
         const eventCard = createEventCard(eventData);
-        const eventsFeed = document.querySelector('.events-feed');
-        
-        if (eventsFeed.firstChild) {
-            eventsFeed.insertBefore(eventCard, eventsFeed.firstChild);
+        console.log('Tarjeta creada:', eventCard);
+
+        // Insertar la tarjeta al principio del feed
+        if (eventsFeed) {
+            if (eventsFeed.firstChild) {
+                eventsFeed.insertBefore(eventCard, eventsFeed.firstChild);
+            } else {
+                eventsFeed.appendChild(eventCard);
+            }
+            console.log('Evento añadido al feed');
         } else {
-            eventsFeed.appendChild(eventCard);
+            console.error('No se encontró el contenedor de eventos');
         }
 
         // Cerrar modal y limpiar formulario
@@ -84,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.hide();
         eventForm.reset();
         imagePreview.classList.add('d-none');
-        dropZone.style.display = 'block';
     });
 
     function createEventCard(event) {
@@ -151,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     
                     <div class="event-actions mt-3">
-                        <button class="btn btn-outline-primary btn-sm">
+                        <button class="btn ${isEventSaved ? 'btn-primary' : 'btn-outline-primary'} btn-sm interest-btn">
                             <i class="fas fa-star"></i> Me interesa
                         </button>
                         <button class="btn btn-outline-secondary btn-sm">
@@ -164,7 +155,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return card;
     }
-
-    // Actualizar el estilo del dropZone para indicar que es obligatorio
-    dropZone.style.borderColor = '#53d5cd';
 });
+
