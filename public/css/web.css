@@ -371,3 +371,135 @@ body {
     width: 55px;
     height: 60px;
 }
+
+/* Área de creación de post/evento */
+.post-creation-area {
+    background-color: #15181c;
+    border: 1px solid #2f3336;
+    border-radius: 16px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.create-post-button {
+    cursor: pointer;
+    padding: 15px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.create-event-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.create-event-left {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.create-event-placeholder {
+    color: #6e767d;
+    font-size: 1.1em;
+    margin-left: 15px;
+}
+
+.create-event-button {
+    background-color: transparent;
+    border: 1px solid #53d5cd;
+    color: #53d5cd;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.create-post-button:hover {
+    background-color: #1e2125;
+}
+
+.create-post-button:hover .create-event-button {
+    background-color: #53d5cd1a;
+}
+
+/* Estilos para el modal de eventos */
+.drop-zone {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.drop-zone:hover {
+    background-color: #1e2125 !important;
+}
+
+.drop-zone.dragover {
+    background-color: #1e2125 !important;
+    border-style: dashed !important;
+}
+
+#imagePreview img {
+    max-height: 200px;
+    object-fit: cover;
+}
+
+/* Inputs y selects en modo oscuro */
+.modal input[type="date"],
+.modal input[type="time"] {
+    color-scheme: dark;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus,
+.modal-content select:focus {
+    background-color: #1e2125 !important;
+    color: white !important;
+    border-color: #53d5cd !important;
+    box-shadow: 0 0 0 0.2rem rgba(83, 213, 205, 0.25);
+}
+
+/* Centrar el modal y mejorar su presentación */
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
+
+.modal-content {
+    margin: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Mejorar el scroll dentro del modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #15181c;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #2f3336;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #404448;
+}
+
+/* Añadir animación suave al modal */
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
