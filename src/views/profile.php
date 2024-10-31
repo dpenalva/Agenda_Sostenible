@@ -71,23 +71,12 @@
             <!-- Barra de Navegación del Perfil -->
             <ul class="nav nav-tabs mt-4" id="profile-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Posts</a>
+                    <a class="nav-link active" href="#">Events</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Respuestas</a>
+                    <a class="nav-link" href="#">Saved</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Destacados</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Artículos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Fotos y videos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Me gusta</a>
-                </li>
+
             </ul>
 
             <!-- Tweets Section -->
