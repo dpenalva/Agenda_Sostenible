@@ -7,6 +7,7 @@
  include "../src/config.php";
  include "../src/controllers/ctrlIndex.php";
  include "../src/controllers/ctrlJson.php";
+ include "../src/controllers/ctrlEvents.php";
 
 /**
   * Carreguem les classes del Framework Emeset
@@ -34,8 +35,10 @@
  /* Front Controller, aquí es decideix quina acció s'executa */
  if($r == "") {
      $response = ctrlIndex($request, $response, $container);
- } elseif($r == "json") {
-  $response = ctrlJson($request, $response, $container);
+ } elseif($r == "api/events/create") {
+  $response = ctrlCreateEvent($request, $response, $container);
+} elseif($r == "api/events/get") {
+    $response = ctrlGetEvents($request, $response, $container);
 } else {
      echo "No existeix la ruta";
  }

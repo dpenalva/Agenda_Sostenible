@@ -35,8 +35,88 @@
         </div>
     </div>
 
+    <!-- Modal para crear evento (añadir después del loginModal, antes del container-fluid) -->
+    <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="createEventModalLabel">Crear Evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="createEventForm" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <!-- Título -->
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Título del evento *</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="eventTitle" required>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label for="eventDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" id="eventDescription" rows="3"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <!-- Fecha -->
+                            <div class="col-md-6 mb-3">
+                                <label for="eventDate" class="form-label">Fecha *</label>
+                                <input type="date" class="form-control bg-dark text-white border-secondary" id="eventDate" required>
+                            </div>
+                            <!-- Hora -->
+                            <div class="col-md-6 mb-3">
+                                <label for="eventTime" class="form-label">Hora *</label>
+                                <input type="time" class="form-control bg-dark text-white border-secondary" id="eventTime" required>
+                            </div>
+                        </div>
+
+                        <!-- Ubicación -->
+                        <div class="mb-3">
+                            <label for="eventLocation" class="form-label">Ubicación</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="eventLocation">
+                        </div>
+
+                        <!-- Capacidad -->
+                        <div class="mb-3">
+                            <label for="eventCapacity" class="form-label">Capacidad máxima</label>
+                            <input type="number" class="form-control bg-dark text-white border-secondary" id="eventCapacity" min="1">
+                        </div>
+
+                        <!-- Tipo de evento -->
+                        <div class="mb-3">
+                            <label for="eventType" class="form-label">Tipo de evento</label>
+                            <select class="form-select bg-dark text-white border-secondary" id="eventType">
+                                <option value="presencial">Presencial</option>
+                                <option value="virtual">Virtual</option>
+                                <option value="hibrido">Híbrido</option>
+                            </select>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="mb-3">
+                            <label for="eventImage" class="form-label">Imagen del evento *</label>
+                            <div class="drop-zone bg-dark border border-secondary rounded p-4 text-center" id="dropZone">
+                                <i class="fas fa-image mb-2"></i>
+                                <p class="mb-0">Arrastra una imagen o haz clic para seleccionar</p>
+                                <p class="text-muted small">(Obligatorio)</p>
+                                <input type="file" id="eventImage" class="d-none" accept="image/*" required>
+                            </div>
+                            <div id="imagePreview" class="mt-2 d-none">
+                                <img src="" alt="Preview" class="img-fluid rounded">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Publicar evento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid d-flex main-content-wrapper">
-        <aside class="sidebar p-4 d-flex flex-column align-items-center">
+        <aside class="sidebar p-4">
         <div class="icon mb-4">
             <img src="../../public/uploads/images/logo1.png" alt="Logo" class="logo1">
         </div>
@@ -52,7 +132,7 @@
         <main class="main-content flex-grow-1 p-4">
             <h2 class="text-white mb-3">Home</h2>
 
-            <!-- Área de creación de evento rediseñada -->
+            <!-- Área de creación de evento -->
             <div class="post-creation-area">
                 <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
                     <div class="create-event-wrapper">
@@ -68,103 +148,10 @@
                 </div>
             </div>
 
-            <!-- Modal para crear evento -->
-            <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content bg-dark text-white">
-                        <div class="modal-header border-secondary">
-                            <h5 class="modal-title" id="createEventModalLabel">Crear Evento</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="d-flex mb-3">
-                                <img src="../../public/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle me-2" style="width: 48px; height: 48px;">
-                                <div class="flex-grow-1">
-                                    <input type="text" class="form-control bg-dark text-white border-0" id="eventTitle" placeholder="Título del evento" style="font-size: 1.2em;">
-                                </div>
-                            </div>
-                            
-                            <div class="event-details">
-                                <!-- Descripción -->
-                                <div class="mb-3">
-                                    <textarea class="form-control bg-dark text-white border-secondary" id="eventDescription" rows="3" placeholder="Describe tu evento..."></textarea>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <!-- Fecha -->
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-dark border-secondary">
-                                                <i class="fas fa-calendar"></i>
-                                            </span>
-                                            <input type="date" class="form-control bg-dark text-white border-secondary" id="eventDate">
-                                        </div>
-                                    </div>
-                                    <!-- Hora -->
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-dark border-secondary">
-                                                <i class="fas fa-clock"></i>
-                                            </span>
-                                            <input type="time" class="form-control bg-dark text-white border-secondary" id="eventTime">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <!-- Ubicación -->
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-dark border-secondary">
-                                                <i class="fas fa-map-marker-alt"></i>
-                                            </span>
-                                            <input type="text" class="form-control bg-dark text-white border-secondary" id="eventLocation" placeholder="Ubicación">
-                                        </div>
-                                    </div>
-                                    <!-- Capacidad -->
-                                    <div class="col-md-6 mb-2">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-dark border-secondary">
-                                                <i class="fas fa-users"></i>
-                                            </span>
-                                            <input type="number" class="form-control bg-dark text-white border-secondary" id="eventCapacity" placeholder="Capacidad máxima">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Tipo de evento -->
-                                <div class="mb-3">
-                                    <select class="form-select bg-dark text-white border-secondary" id="eventType">
-                                        <option value="" disabled selected>Selecciona el tipo de evento</option>
-                                        <option value="presencial">Presencial</option>
-                                        <option value="virtual">Virtual</option>
-                                        <option value="hibrido">Híbrido</option>
-                                    </select>
-                                </div>
-
-                                <!-- Área para subir imagen -->
-                                <div class="mb-3">
-                                    <div class="drop-zone bg-dark border border-secondary rounded p-4 text-center" id="dropZone">
-                                        <i class="fas fa-image mb-2"></i>
-                                        <p class="mb-0">Arrastra una imagen o haz clic para seleccionar</p>
-                                        <input type="file" id="eventImage" class="d-none" accept="image/*">
-                                    </div>
-                                    <div id="imagePreview" class="mt-2 d-none">
-                                        <img src="" alt="Preview" class="img-fluid rounded">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer border-secondary">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" class="btn btn-primary" id="createEventBtn">Publicar evento</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Feed de eventos -->
+            <div class="events-feed mt-4">
+                <!-- Los eventos se mostrarán aquí -->
             </div>
-
-            <!-- Sección donde aparecerán los posts creados -->
-            <div id="posts-container"></div>
         </main>
 
         <!-- Right Sidebar with Calendar -->
@@ -178,5 +165,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="../../public/js/calendar.js"></script>
+    <script src="../../public/js/events.js"></script>
 </body>
 </html>
