@@ -48,16 +48,24 @@
             <div class="profile-info mt-5 pt-3">
                 <h3 id="profile-name" class="fw-bold">Nombre de Usuario</h3>
                 <p id="profile-username" class="text-light">@Usuario</p>
-                <p class="profile-bio">
-                    <i class="fas fa-video"></i> TikTok: <a href="#">@username_tiktok</a> <br>
-                    <i class="fas fa-twitch"></i> Twitch: <a href="#">twitch.tv/username</a>
-                </p>
-                <p class="text-light"><i class="fas fa-calendar-alt"></i> Se unió en abril de 2016</p>
-                <div class="d-flex followers-count">
-                    <p class="me-3"><strong>214</strong> Siguiendo</p>
-                    <p><strong>161</strong> Seguidores</p>
+                
+                <!-- Bio con botón de editar -->
+                <div class="profile-bio-container">
+                    <div class="profile-bio" id="bio-display">
+                        <!-- Aquí irá el texto de la bio -->
+                        Escribe algo sobre ti...
+                    </div>
+                    <div class="bio-edit-container" id="bio-edit" style="display: none;">
+                        <textarea class="form-control" id="bio-textarea" rows="4"></textarea>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-primary" id="save-bio">Guardar</button>
+                            <button class="btn btn-sm btn-secondary" id="cancel-bio">Cancelar</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-link edit-bio-btn" id="edit-bio-btn">
+                        <i class="fas fa-edit"></i> Editar bio
+                    </button>
                 </div>
-                <button class="btn profile-edit-btn mt-3">Editar perfil</button>
             </div>
 
             <!-- Barra de Navegación del Perfil -->
