@@ -2,7 +2,7 @@ services:
   php-apache:
     #Mapeig de ports
     ports:
-      - "80:80"
+      - "8080:80"
     #Construeix la imatge del contenidor segons el Dockerfile que hi ha a mysql
     build: 
       context: .

@@ -1,9 +1,10 @@
 <?php
 
-/** 
- * Fitxer de configuració de l'aplicació.
- * */ 
-
 $config = [
-
-];
+    "db" => [
+        "name" => "agenda_figuerenca",
+        "user" => "root",
+        "pass" => "12345",
+        "host" => "mysql",
+    ]
+]; 
