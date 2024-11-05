@@ -88,6 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function createEventCard(event) {
+        console.log('Evento recibido:', event);
+        console.log('Fecha del evento:', event.event_date);
+        console.log('Tipo de fecha:', typeof event.event_date);
+
         const card = document.createElement('div');
         card.className = 'event-card';
         
@@ -162,7 +166,78 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
+        const interestButton = card.querySelector('.btn-outline-primary');
+        
+        // Siempre empezar sin marcar
+        interestButton.classList.remove('active');
+        interestButton.style.backgroundColor = '';
+        interestButton.style.color = '';
+
+        interestButton.addEventListener('click', function() {
+            const isInterested = this.classList.contains('active');
+            
+            if (!isInterested) {
+                // Marcar como interesado
+                this.classList.add('active');
+                this.style.backgroundColor = '#53d5cd';
+                this.style.color = '#15181c';
+                
+                saveEventToCalendar({
+                    id: event.id,
+                    title: event.title,
+                    event_date: event.event_date,
+                    event_time: event.event_time
+                });
+            } else {
+                // Desmarcar interés
+                this.classList.remove('active');
+                this.style.backgroundColor = '';
+                this.style.color = '';
+                
+                removeEventFromCalendar(event.id);
+            }
+        });
+
         return card;
+    }
+
+    // Funciones auxiliares para manejar eventos en el calendario
+    function saveEventToCalendar(event) {
+        // Asegurarnos de que la fecha está en el formato correcto
+        let eventToSave = {
+            ...event,
+            event_date: new Date(event.event_date).toISOString().split('T')[0]
+        };
+
+        console.log('Guardando evento formateado:', eventToSave);
+
+        let savedEvents = JSON.parse(localStorage.getItem('interestedEvents') || '[]');
+        if (!savedEvents.some(e => e.id === eventToSave.id)) {
+            savedEvents.push(eventToSave);
+            localStorage.setItem('interestedEvents', JSON.stringify(savedEvents));
+            console.log('Estado actual del localStorage:', localStorage.getItem('interestedEvents'));
+        }
+
+        // Forzar actualización del calendario
+        if (window.calendarInstance) {
+            window.calendarInstance.loadSavedEvents();
+            window.calendarInstance.renderCalendar();
+            console.log('Calendario actualizado');
+        } else {
+            console.log('No se encontró instancia del calendario');
+        }
+    }
+
+    function removeEventFromCalendar(eventId) {
+        let savedEvents = JSON.parse(localStorage.getItem('interestedEvents') || '[]');
+        savedEvents = savedEvents.filter(e => e.id !== eventId);
+        console.log('Eventos después de eliminar:', savedEvents);
+        localStorage.setItem('interestedEvents', JSON.stringify(savedEvents));
+        
+        if (window.calendarInstance) {
+            window.calendarInstance.loadSavedEvents();
+            window.calendarInstance.renderCalendar();
+        }
     }
 
     // Actualizar el estilo del dropZone para indicar que es obligatorio
