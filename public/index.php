@@ -13,6 +13,7 @@ ini_set('display_errors', 1);
  include "../src/controllers/ctrlEvents.php";
  include "../src/controllers/ctrlProfile.php";
  include "../src/controllers/ctrlAuth.php";
+ include "../src/controllers/ctrlRegister.php";
 
 /**
   * Carreguem les classes del Framework Emeset
@@ -37,35 +38,49 @@ ini_set('display_errors', 1);
     $r = $_REQUEST["r"];
  }
  
- /* Front Controller, aquí es decideix quina acció s'executa */
- switch($r) {
-    case "":
-        $response = ctrlIndex($request, $response, $container);
-        break;
-    case "login":
-        $response = ctrlLogin($request, $response, $container);
-        break;
-    case "register":
-        $response = ctrlRegister($request, $response, $container);
-        break;
-    case "logout":
-        $response = ctrlLogout($request, $response, $container);
-        break;
-    case "events":
-        $response = ctrlEventsPage($request, $response, $container);
-        break;
-    case "profile":
-        $response = ctrlProfile($request, $response, $container);
-        break;
-    case "api/events/create":
-        $response = ctrlCreateEvent($request, $response, $container);
-        break;
-    case "api/events/get":
-        $response = ctrlGetEvents($request, $response, $container);
-        break;
-    default:
-        $response->set("error", "Ruta no encontrada");
-        $response->setTemplate("404.php");
+ /* Si el usuario no está autenticado, solo permitir acceso a login/register */
+ if (!isset($_SESSION['user_id'])) {
+    if ($r === '' || $r === 'login' || $r === 'register') {
+        $response = ctrlLoginPage($request, $response, $container);
+    } else {
+        header('Location: /');
+        exit;
+    }
+} else {
+    /* Usuario autenticado - procesar rutas normales */
+    switch($r) {
+        case "":
+        case "login":
+            $response = ctrlIndex($request, $response, $container);
+            break;
+        case "register":
+            $response = ctrlRegister($request, $response, $container);
+            break;
+        case "api/auth/login":
+            $response = ctrlLoginApi($request, $response, $container);
+            break;
+        case "api/auth/register":
+            $response = ctrlRegisterApi($request, $response, $container);
+            break;
+        case "events":
+            $response = ctrlEventsPage($request, $response, $container);
+            break;
+        case "profile":
+            $response = ctrlProfile($request, $response, $container);
+            break;
+        case "api/events/create":
+            $response = ctrlCreateEvent($request, $response, $container);
+            break;
+        case "api/events/get":
+            $response = ctrlGetEvents($request, $response, $container);
+            break;
+        case "logout":
+            $response = ctrlLogout($request, $response, $container);
+            break;
+        default:
+            $response->set("error", "Ruta no encontrada");
+            $response->setTemplate("404.php");
+    }
 }
 
  /* Enviem la resposta al client. */
