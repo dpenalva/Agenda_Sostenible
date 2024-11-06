@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/web.css">
+    <link href="/css/web.css" rel="stylesheet">
 </head>
 
 <body>
@@ -21,7 +21,7 @@
         <!-- Sidebar (común en todas las páginas) -->
         <aside class="sidebar p-4 d-flex flex-column align-items-center">
             <div class="icon mb-4">
-                <img src="../../public/uploads/images/logo1.png" alt="Logo" class="logo1">
+                <img src="/uploads/images/logo1.png" alt="Logo" class="logo1">
             </div>
             <nav class="nav flex-column w-100">
                 <a href="/" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
@@ -93,8 +93,8 @@
     </div>
 
     <!-- Agregar el script del menú antes de los otros scripts -->
-    <script src="../../public/js/menu.js"></script>
-    <script src="../../public/js/profile.js"></script>
+    <script src="/js/menu.js"></script>
+    <script src="/js/profile.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 </body>
