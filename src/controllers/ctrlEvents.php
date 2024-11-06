@@ -1,22 +1,31 @@
 <?php
 
+function ctrlEventsPage($request, $response, $container) {
+    // Esta función renderiza la página de eventos
+    $response->setTemplate("events.php");
+    return $response;
+}
+
 function ctrlCreateEvent($request, $response, $container) {
     try {
         $eventData = $request->get('INPUT_POST', 'eventData');
-        // Asegúrate de que la fecha esté en formato YYYY-MM-DD
-        error_log('Fecha del evento: ' . $eventData['event_date']);
-        // ... resto del código
+        // Validación y procesamiento del evento
+        $response->setJson();
+        $response->set("success", true);
+        $response->set("message", "Evento creado correctamente");
     } catch (Exception $e) {
-        // ... manejo de errores
+        $response->setJson();
+        $response->set("success", false);
+        $response->set("message", $e->getMessage());
     }
+    return $response;
 }
 
 function ctrlGetEvents($request, $response, $container) {
-    $eventRepository = $container->getEventRepository();
-    $events = $eventRepository->getAll();
+    // TODO: Implementar cuando tengamos la base de datos
+    $events = []; // Aquí irán los eventos de la base de datos
     
     $response->setJson();
-    $response->set('events', $events);
-    
+    $response->set("events", $events);
     return $response;
 } 

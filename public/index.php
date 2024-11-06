@@ -1,4 +1,7 @@
 <?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 /**
  * Aquest fitxer és un exemple de Front Controller, pel qual passen totes les requests.
@@ -8,6 +11,8 @@
  include "../src/controllers/ctrlIndex.php";
  include "../src/controllers/ctrlJson.php";
  include "../src/controllers/ctrlEvents.php";
+ include "../src/controllers/ctrlProfile.php";
+ include "../src/controllers/ctrlAuth.php";
 
 /**
   * Carreguem les classes del Framework Emeset
@@ -33,15 +38,35 @@
  }
  
  /* Front Controller, aquí es decideix quina acció s'executa */
- if($r == "") {
-     $response = ctrlIndex($request, $response, $container);
- } elseif($r == "api/events/create") {
-  $response = ctrlCreateEvent($request, $response, $container);
-} elseif($r == "api/events/get") {
-    $response = ctrlGetEvents($request, $response, $container);
-} else {
-     echo "No existeix la ruta";
- }
+ switch($r) {
+    case "":
+        $response = ctrlIndex($request, $response, $container);
+        break;
+    case "login":
+        $response = ctrlLogin($request, $response, $container);
+        break;
+    case "register":
+        $response = ctrlRegister($request, $response, $container);
+        break;
+    case "logout":
+        $response = ctrlLogout($request, $response, $container);
+        break;
+    case "events":
+        $response = ctrlEventsPage($request, $response, $container);
+        break;
+    case "profile":
+        $response = ctrlProfile($request, $response, $container);
+        break;
+    case "api/events/create":
+        $response = ctrlCreateEvent($request, $response, $container);
+        break;
+    case "api/events/get":
+        $response = ctrlGetEvents($request, $response, $container);
+        break;
+    default:
+        $response->set("error", "Ruta no encontrada");
+        $response->setTemplate("404.php");
+}
 
  /* Enviem la resposta al client. */
  $response->response();

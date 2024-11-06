@@ -25,7 +25,7 @@ class Request
      **/
     public function __construct()
     {
-        session_start();
+        // Eliminamos session_start() de aquí ya que lo movimos al index.php
     }
 
      /**

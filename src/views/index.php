@@ -122,9 +122,9 @@
         </div>
 
             <nav class="nav flex-column w-100">
-                <a href="/src/views/index.php" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
-                <a href="/src/views/events.php" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
-                <a href="/src/views/profile.php" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
+                <a href="/" class="nav-link text-white active"><i class="fas fa-home"></i> Home</a>
+                <a href="?r=events" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
+                <a href="?r=profile" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
             </nav>
             <button id="logout-button" class="btn logout-btn mt-4 w-100">Cerrar Sesión</button>
         </aside>
