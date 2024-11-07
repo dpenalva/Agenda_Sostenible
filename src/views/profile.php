@@ -27,35 +27,113 @@
 
         <!-- Contenido Principal -->
         <main class="main-content flex-grow-1 p-4">
-            <div class="profile-banner position-relative mb-5">
-                <img id="banner-img" src="<?php echo $userData['banner'] ?? 'https://via.placeholder.com/600x200'; ?>" alt="Cover Photo" class="cover-photo w-100">
-                <div class="profile-avatar-large">
-                    <img id="profile-img" src="<?php echo $userData['imatge_perfil'] ?? 'https://via.placeholder.com/100'; ?>" alt="Profile Picture" class="rounded-circle">
-                </div>
-            </div>
-
-            <div class="profile-info mt-5 pt-3 text-center">
-                <h3 id="profile-name" class="fw-bold"><?php echo htmlspecialchars($userData['nom'] ?? '') . ' ' . htmlspecialchars($userData['cognoms'] ?? ''); ?></h3>
-                <p id="profile-username" class="text-light">@<?php echo htmlspecialchars($userData['nom_usuari'] ?? ''); ?></p>
-                <button class="btn btn-outline-light edit-profile-btn">Editar perfil</button>
-                <div class="profile-bio-container mt-3">
-                    <div class="profile-bio" id="bio-display">
-                        <?php echo htmlspecialchars($userData['biografia'] ?? 'Escribe algo sobre ti...'); ?>
+            <div class="profile-container">
+                <!-- Banner -->
+                <div class="banner-container">
+                    <img src="<?php echo htmlspecialchars($userData['banner'] ?? '/uploads/images/default-banner.jpg'); ?>" 
+                         alt="Banner" 
+                         class="banner-image">
+                    <div class="edit-overlay">
+                        <button type="button" class="btn edit-banner-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <ul class="nav nav-tabs mt-4 justify-content-center" id="profile-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Posts</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Respuestas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Destacados</a>
-                </li>
-            </ul>
+                <div class="profile-info-container">
+                    <!-- Contenedor superior para foto y botón -->
+                    <div class="profile-header">
+                        <!-- Foto de perfil -->
+                        <div class="profile-image-container">
+                            <img src="<?php echo htmlspecialchars($userData['imatge_perfil'] ?? '/uploads/images/default-avatar.png'); ?>" 
+                                 alt="Foto de perfil" 
+                                 class="profile-image">
+                            <div class="edit-overlay">
+                                <button type="button" class="btn edit-photo-btn">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botón editar perfil -->
+                        <button class="btn edit-profile-btn" id="editProfileBtn" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="fas fa-edit"></i>
+                            Editar perfil
+                        </button>
+                    </div>
+
+                    <!-- Información del usuario -->
+                    <div class="user-info">
+                        <h2 id="displayName"><?php echo htmlspecialchars($userData['nom']); ?></h2>
+                        <p class="username">@<?php echo htmlspecialchars($userData['nom_usuari']); ?></p>
+                        <p class="bio" id="displayBio">
+                            <?php echo htmlspecialchars($userData['biografia'] ?? 'No hay biografía aún...'); ?>
+                        </p>
+                    </div>
+
+                    <!-- Pestañas -->
+                    <div class="profile-tabs">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#posts">Posts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#respuestas">Respuestas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#destacados">Destacados</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Modal de edición -->
+                <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar perfil</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="profileEditForm">
+                                    <!-- Nombre completo editable -->
+                                    <div class="mb-3">
+                                        <label for="editName" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="editName" 
+                                               value="<?php echo htmlspecialchars($userData['nom']); ?>">
+                                    </div>
+
+                                    <!-- Nombre de usuario no editable -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Nombre de usuario</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">@</span>
+                                            <input type="text" class="form-control" 
+                                                   value="<?php echo htmlspecialchars($userData['nom_usuari']); ?>" 
+                                                   disabled>
+                                        </div>
+                                    </div>
+
+                                    <!-- Biografía editable -->
+                                    <div class="mb-3">
+                                        <label for="editBio" class="form-label">Biografía</label>
+                                        <textarea class="form-control" id="editBio" rows="3"
+                                                ><?php echo htmlspecialchars($userData['biografia'] ?? ''); ?></textarea>
+                                        <div class="form-text">Máximo 160 caracteres</div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inputs ocultos para las imágenes -->
+                <input type="file" id="bannerInput" class="d-none" accept="image/*">
+                <input type="file" id="profileImageInput" class="d-none" accept="image/*">
+            </div>
 
             <div class="events mt-4">
                 <?php if (!empty($userEvents)): ?>
@@ -84,5 +162,7 @@
     <script src="/js/menu.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/profile.js"></script>
 </body>
 </html>

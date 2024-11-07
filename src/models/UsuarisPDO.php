@@ -104,4 +104,69 @@ class UsuarisPDO extends DB {
             throw new \Exception("Error al obtener el usuario");
         }
     }
+
+    public function updateProfileImage($userId, $imageUrl) {
+        try {
+            $query = "UPDATE usuaris SET imatge_perfil = :imageUrl WHERE id = :userId";
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute([
+                ':imageUrl' => $imageUrl,
+                ':userId' => $userId
+            ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new \Exception("No se pudo actualizar la imagen de perfil");
+            }
+
+            return true;
+        } catch (\PDOException $e) {
+            error_log("Error en updateProfileImage: " . $e->getMessage());
+            throw new \Exception("Error al actualizar la imagen de perfil");
+        }
+    }
+
+    public function updateBanner($userId, $imageUrl) {
+        try {
+            $query = "UPDATE usuaris SET banner = :imageUrl WHERE id = :userId";
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute([
+                ':imageUrl' => $imageUrl,
+                ':userId' => $userId
+            ]);
+            
+            if ($stmt->rowCount() === 0) {
+                throw new \Exception("No se pudo actualizar el banner");
+            }
+            
+            return true;
+        } catch (\PDOException $e) {
+            error_log("Error en updateBanner: " . $e->getMessage());
+            throw new \Exception("Error al actualizar el banner");
+        }
+    }
+
+    public function updateProfile($userId, $data) {
+        try {
+            $query = "UPDATE usuaris SET 
+                      nom = :name,
+                      biografia = :bio
+                      WHERE id = :userId";
+            
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute([
+                ':name' => $data['name'],
+                ':bio' => $data['bio'] ?? null,
+                ':userId' => $userId
+            ]);
+            
+            if ($stmt->rowCount() === 0) {
+                throw new \Exception("No se pudo actualizar el perfil");
+            }
+            
+            return true;
+        } catch (\PDOException $e) {
+            error_log("Error en updateProfile: " . $e->getMessage());
+            throw new \Exception("Error al actualizar el perfil");
+        }
+    }
 } 

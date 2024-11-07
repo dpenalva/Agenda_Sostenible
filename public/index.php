@@ -69,6 +69,15 @@ ini_set('display_errors', 1);
     case "api/events/get":
         $response = ctrlGetEvents($request, $response, $container);
         break;
+    case "updateProfileImage":
+        $response = ctrlUpdateProfileImage($request, $response, $container);
+        break;
+    case "updateBanner":
+        $response = ctrlUpdateBanner($request, $response, $container);
+        break;
+    case "updateProfile":
+        $response = ctrlUpdateProfile($request, $response, $container);
+        break;
     default:
         $response->set("error", "Ruta no encontrada");
         $response->setTemplate("404.php");
