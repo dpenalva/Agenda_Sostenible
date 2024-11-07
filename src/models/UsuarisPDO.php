@@ -27,42 +27,13 @@ class UsuarisPDO extends DB {
 
     public function register($data) {
         try {
-            // Verificar si el email ya existe
-            $stmt = $this->sql->prepare("SELECT id FROM usuaris WHERE email = :email");
-            $stmt->execute([':email' => $data['email']]);
-            if ($stmt->fetch()) {
-                throw new \Exception("El email ya está registrado");
-            }
-
-            // Verificar si el nombre de usuario ya existe
-            $stmt = $this->sql->prepare("SELECT id FROM usuaris WHERE nom_usuari = :nom_usuari");
-            $stmt->execute([':nom_usuari' => $data['nom_usuari']]);
-            if ($stmt->fetch()) {
-                throw new \Exception("El nombre de usuario ya está en uso");
-            }
-
-            // Hash de la contraseña
-            $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-
-            // Preparar la consulta
-            $query = "INSERT INTO usuaris (
-                nom, 
-                cognoms, 
-                nom_usuari, 
-                email, 
-                password
-            ) VALUES (
-                :nom,
-                :cognoms,
-                :nom_usuari,
-                :email,
-                :password
-            )";
-
+            $query = "INSERT INTO usuaris (nom, cognoms, nom_usuari, email, password) VALUES (:nom, :cognoms, :nom_usuari, :email, :password)";
             $stmt = $this->sql->prepare($query);
-            
-            // Ejecutar la consulta
-            $result = $stmt->execute([
+
+            // Hash the password before storing it
+            $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+
+            $stmt->execute([
                 ':nom' => $data['nom'],
                 ':cognoms' => $data['cognoms'],
                 ':nom_usuari' => $data['nom_usuari'],
@@ -70,14 +41,9 @@ class UsuarisPDO extends DB {
                 ':password' => $hashedPassword
             ]);
 
-            if ($result) {
-                return $this->sql->lastInsertId();
-            }
-
-            throw new \Exception("Error al registrar el usuario");
-            
+            return $this->sql->lastInsertId();
         } catch (\PDOException $e) {
-            error_log("Error PDO en register: " . $e->getMessage());
+            error_log("Error registering user: " . $e->getMessage());
             throw new \Exception("Error al registrar el usuario");
         }
     }

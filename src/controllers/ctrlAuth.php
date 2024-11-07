@@ -57,9 +57,6 @@ function ctrlRegister($request, $response, $container) {
                 'password' => $request->get('POST', 'password')
             ];
 
-            // Debug
-            error_log("Datos recibidos: " . print_r($data, true));
-
             // Validaciones básicas
             foreach ($data as $key => $value) {
                 if (empty($value)) {
@@ -97,7 +94,6 @@ function ctrlRegister($request, $response, $container) {
                 header("Location: /");
                 exit();
             }
-
         }
 
         // Si no es POST, mostrar el formulario
@@ -106,7 +102,7 @@ function ctrlRegister($request, $response, $container) {
 
     } catch (\Exception $e) {
         error_log("Error en registro: " . $e->getMessage());
-        
+
         if ($request->isAjax()) {
             $response->setJson();
             $response->set("success", false);
