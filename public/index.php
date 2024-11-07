@@ -8,6 +8,10 @@ ini_set('display_errors', 1);
  */
 
  include "../src/config.php";
+ include "../src/middleware/auth.php";
+ include "../src/models/DB.php";
+ include "../src/models/UsuarisPDO.php";
+ include "../src/models/EsdevenimentsPDO.php";
  include "../src/controllers/ctrlIndex.php";
  include "../src/controllers/ctrlJson.php";
  include "../src/controllers/ctrlEvents.php";
@@ -32,11 +36,13 @@ ini_set('display_errors', 1);
   * Si hi ha paràmetre, carreguem la pàgina que correspongui.
   * Si no existeix la pàgina, carreguem la pàgina d'error.
   */
- $r = '';
- if(isset($_REQUEST["r"])){
-    $r = $_REQUEST["r"];
+ $r = $_REQUEST["r"] ?? '';
+
+ // Apply authentication middleware to protected routes
+ if (!in_array($r, ['login', 'register'])) {
+     authMiddleware($request, $response, $container, function() {});
  }
- 
+
  /* Front Controller, aquí es decideix quina acció s'executa */
  switch($r) {
     case "":
@@ -70,3 +76,19 @@ ini_set('display_errors', 1);
 
  /* Enviem la resposta al client. */
  $response->response();
+
+// Verificar si hay sesión activa
+$isLoggedIn = isset($_SESSION['user_id']);
+$response->set("isLoggedIn", $isLoggedIn);
+
+if ($isLoggedIn) {
+    try {
+        $usuarisModel = $container->usuaris();
+        $user = $usuarisModel->get($_SESSION['user_id']);
+        $response->set("user", $user);
+    } catch (\Exception $e) {
+        session_destroy();
+        $response->set("isLoggedIn", false);
+        $response->set("error", "Error al cargar los datos del usuario");
+    }
+}

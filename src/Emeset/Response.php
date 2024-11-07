@@ -13,19 +13,16 @@ namespace Emeset;
 /**
  * Response: Objecte que encapsula la resposta.
  *
- * @author: Dani Prados dprados@cendrassos.net
- *
  * Per guarda tota la informació de la resposta.
  **/
 class Response
 {
-
-    public $values = [];
-    public $header = false;
-    public $path;
-    public $template;
-    public $redirect = false;
-    public $json = false;
+    private $data = [];
+    private $template;
+    private $path;
+    private $header = false;
+    private $redirect = false;
+    private $json = false;
 
     /**
      * __construct:  Té tota la informació per crear la resposta
@@ -40,24 +37,24 @@ class Response
     /**
      * set:  obté un valor de l'entrada especificada amb el filtre indicat
      *
-     * @param $id    string identificadro del valor que deem.
+     * @param $id    string identificador del valor que deem.
      * @param $value mixed valor a desar
      **/
     public function set($id, $value)
     {
-        $this->values[$id] = $value;
+        $this->data[$id] = $value;
     }
 
     /**
      * setSession guarda un valor a la sessió
      *
      * @param  string $id    clau del valor que volem desar
-     * @param  mixed  $valor variable que volem desar
+     * @param  mixed  $value variable que volem desar
      * @return void
      */
     public function setSession($id, $value)
     {
-           $_SESSION[$id] = $value;
+        $_SESSION[$id] = $value;
     }
 
     /**
@@ -130,7 +127,7 @@ class Response
      *
      * @return void
      */
-    public function setJSON()
+    public function setJson()
     {
         $this->json = true;
     }
@@ -144,14 +141,23 @@ class Response
     {
         if ($this->redirect) {
             header($this->header);
+            exit();
         } elseif ($this->json) {
-            echo json_encode($this->values);
+            header('Content-Type: application/json');
+            echo json_encode($this->data);
         } else {
             if ($this->header !== false) {
                 header($this->header);
             }
-            extract($this->values);
-            include $this->path . $this->template;
+            extract($this->data);
+            $viewPath = __DIR__ . '/../views/' . $this->template;
+
+            if (file_exists($viewPath)) {
+                include $viewPath;
+            } else {
+                // Maneja el error si el archivo no existe
+                echo "Error: La vista de login no se encuentra.";
+            }
         }
     }
 }

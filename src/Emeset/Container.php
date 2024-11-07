@@ -20,7 +20,6 @@ namespace Emeset;
 class Container
 {
     public $config = [];
-    public $sql;
 
     /**
      * __construct:  Crear contenidor
@@ -30,6 +29,11 @@ class Container
     public function __construct($config)
     {
         $this->config = $config;
+    }
+
+    public function get($key)
+    {
+        return $this->config[$key] ?? null;
     }
 
     public function response()
@@ -42,4 +46,8 @@ class Container
         return new \Emeset\Request();
     }
 
+    public function usuaris()
+    {
+        return new \Models\UsuarisPDO($this->config['db']);
+    }
 }
