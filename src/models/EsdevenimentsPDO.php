@@ -1,8 +1,21 @@
 <?php
 namespace Models;
 
-class EsdevenimentsPDO extends DB {
-    
+class EsdevenimentsPDO {
+    private $sql;
+
+    public function __construct($config) {
+        $this->sql = new \PDO(
+            "mysql:host=" . $config['host'] . ";dbname=" . $config['name'],
+            $config['user'],
+            $config['pass'],
+            [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+            ]
+        );
+    }
+
     /**
      * Obtiene todos los eventos de un usuario específico
      */
@@ -122,33 +135,30 @@ class EsdevenimentsPDO extends DB {
     public function getTotalEvents() {
         try {
             $query = "SELECT COUNT(*) as total FROM esdeveniments";
-            $stmt = $this->sql->prepare($query);
-            $stmt->execute();
-            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            return $result['total'];
+            $stmt = $this->sql->query($query);
+            $result = $stmt->fetch();
+            return $result['total'] ?? 0;
         } catch (\PDOException $e) {
-            error_log("Error getting total events: " . $e->getMessage());
-            throw new \Exception("Error al obtener el total de eventos");
+            error_log("Error en getTotalEvents: " . $e->getMessage());
+            return 0;
         }
     }
 
     public function getRecentEvents($limit = 5) {
         try {
-            $query = "SELECT e.*, u.nom_usuari 
-                      FROM esdeveniments e 
-                      LEFT JOIN usuaris u ON e.usuari_id = u.id 
-                      ORDER BY e.created_at DESC 
-                      LIMIT :limit";
+            $query = "SELECT id, titol, data 
+                     FROM esdeveniments 
+                     ORDER BY id DESC 
+                     LIMIT :limit";
             
             $stmt = $this->sql->prepare($query);
-            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
             $stmt->execute();
             
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $stmt->fetchAll();
         } catch (\PDOException $e) {
-            error_log("Error getting recent events: " . $e->getMessage());
-            throw new \Exception("Error al obtener eventos recientes");
+            error_log("Error específico en getRecentEvents: " . $e->getMessage());
+            return [];
         }
     }
 } 

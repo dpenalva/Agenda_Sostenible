@@ -22,7 +22,9 @@
                 <a href="?r=events" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
                 <a href="?r=profile" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                    <a href="?r=admin" class="nav-link text-white"><i class="fas fa-cog"></i> Panel Admin</a>
+                    <a href="/?r=admin" class="nav-link text-white">
+                        <i class="fas fa-cog"></i> Panel Admin
+                    </a>
                 <?php endif; ?>
             </nav>
             <button id="logout-button" class="btn logout-btn mt-4 w-100" onclick="window.location.href='/?r=logout'">Cerrar Sesión</button>
