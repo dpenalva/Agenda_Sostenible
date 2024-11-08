@@ -9,6 +9,7 @@ ini_set('display_errors', 1);
 
  include "../src/config.php";
  include "../src/middleware/auth.php";
+ include "../src/middleware/adminAuth.php";
  include "../src/models/DB.php";
  include "../src/models/UsuarisPDO.php";
  include "../src/models/EsdevenimentsPDO.php";
@@ -17,6 +18,7 @@ ini_set('display_errors', 1);
  include "../src/controllers/ctrlEvents.php";
  include "../src/controllers/ctrlProfile.php";
  include "../src/controllers/ctrlAuth.php";
+ include "../src/controllers/ctrlAdmin.php";
 
 /**
   * Carreguem les classes del Framework Emeset
@@ -77,6 +79,11 @@ ini_set('display_errors', 1);
         break;
     case "updateProfile":
         $response = ctrlUpdateProfile($request, $response, $container);
+        break;
+    case "admin":
+        $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
+            return ctrlAdmin($request, $response, $container);
+        });
         break;
     default:
         $response->set("error", "Ruta no encontrada");

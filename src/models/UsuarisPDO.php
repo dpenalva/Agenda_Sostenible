@@ -212,9 +212,9 @@ class UsuarisPDO extends DB {
 
     public function getRecentUsers($limit = 5) {
         try {
-            $query = "SELECT id, nom, cognoms, email, created_at 
+            $query = "SELECT id, nom, cognoms, email 
                       FROM usuaris 
-                      ORDER BY created_at DESC 
+                      ORDER BY id DESC 
                       LIMIT :limit";
             
             $stmt = $this->sql->prepare($query);
