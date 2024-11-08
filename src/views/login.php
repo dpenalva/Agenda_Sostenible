@@ -19,6 +19,9 @@
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
+            <?php if (isset($error)): ?>
+                <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
             <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
         </form>
         <div class="text-center mt-3">
