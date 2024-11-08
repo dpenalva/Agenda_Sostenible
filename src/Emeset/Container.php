@@ -50,4 +50,9 @@ class Container
     {
         return new \Models\UsuarisPDO($this->config['db']);
     }
+
+    public function esdeveniments()
+    {
+        return new \Models\EsdevenimentsPDO($this->config['db']);
+    }
 }

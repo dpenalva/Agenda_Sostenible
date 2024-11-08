@@ -118,4 +118,37 @@ class EsdevenimentsPDO extends DB {
             throw new \Exception("Error al crear el evento");
         }
     }
+
+    public function getTotalEvents() {
+        try {
+            $query = "SELECT COUNT(*) as total FROM esdeveniments";
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute();
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            return $result['total'];
+        } catch (\PDOException $e) {
+            error_log("Error getting total events: " . $e->getMessage());
+            throw new \Exception("Error al obtener el total de eventos");
+        }
+    }
+
+    public function getRecentEvents($limit = 5) {
+        try {
+            $query = "SELECT e.*, u.nom_usuari 
+                      FROM esdeveniments e 
+                      LEFT JOIN usuaris u ON e.usuari_id = u.id 
+                      ORDER BY e.created_at DESC 
+                      LIMIT :limit";
+            
+            $stmt = $this->sql->prepare($query);
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\PDOException $e) {
+            error_log("Error getting recent events: " . $e->getMessage());
+            throw new \Exception("Error al obtener eventos recientes");
+        }
+    }
 } 

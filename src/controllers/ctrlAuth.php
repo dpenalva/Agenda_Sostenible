@@ -6,6 +6,8 @@ function ctrlLogin($request, $response, $container) {
             $email = $request->get('POST', 'email');
             $password = $request->get('POST', 'password');
 
+            error_log("Intento de login - Email: " . $email);
+
             if (empty($email) || empty($password)) {
                 throw new \Exception("Todos los campos son obligatorios");
             }
@@ -13,25 +15,40 @@ function ctrlLogin($request, $response, $container) {
             $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
             $user = $usuarisModel->login($email, $password);
 
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['nom'];
-            $_SESSION['user_email'] = $user['email'];
+            error_log("Login exitoso - Usuario: " . $user['nom'] . " - Rol: " . $user['rol']);
 
-            if ($request->isAjax()) {
-                $response->setJson();
-                $response->set("success", true);
-                $response->set("redirect", "/?r=profile");
-                return $response;
+            if ($user) {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+
+                error_log("Iniciando sesión para usuario - ID: " . $user['id'] . " - Rol: " . $user['rol']);
+                
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['nom'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['user_role'] = $user['rol'];
+
+                error_log("Sesión iniciada - Datos de sesión: " . print_r($_SESSION, true));
+
+                if ($request->isAjax()) {
+                    $response->setJson();
+                    $response->set("success", true);
+                    $response->set("redirect", "/");
+                    return $response;
+                }
+
+                header("Location: /");
+                exit();
             }
-
-            header("Location: /?r=profile");
-            exit();
         }
 
         $response->setTemplate("login.php");
         return $response;
 
     } catch (\Exception $e) {
+        error_log("Error en login: " . $e->getMessage());
+        
         if ($request->isAjax()) {
             $response->setJson();
             $response->set("success", false);
