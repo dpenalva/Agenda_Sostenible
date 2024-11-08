@@ -227,4 +227,65 @@ class UsuarisPDO extends DB {
             throw new \Exception("Error al obtener usuarios recientes");
         }
     }
+
+    public function deleteUser($id) {
+        try {
+            $query = "DELETE FROM usuaris WHERE id = :id";
+            $stmt = $this->sql->prepare($query);
+            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            error_log("Error deleting user: " . $e->getMessage());
+            throw new \Exception("Error al eliminar el usuario");
+        }
+    }
+
+    public function updateUser($id, $data) {
+        try {
+            $query = "UPDATE usuaris 
+                     SET nom = :nom, 
+                         cognoms = :cognoms, 
+                         email = :email,
+                         nom_usuari = :nom_usuari,
+                         biografia = :biografia
+                     WHERE id = :id";
+            
+            $stmt = $this->sql->prepare($query);
+            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+            $stmt->bindValue(':nom', $data['nom']);
+            $stmt->bindValue(':cognoms', $data['cognoms']);
+            $stmt->bindValue(':email', $data['email']);
+            $stmt->bindValue(':nom_usuari', $data['nom_usuari']);
+            $stmt->bindValue(':biografia', $data['biografia'] ?? '');
+            
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            error_log("Error updating user: " . $e->getMessage());
+            throw new \Exception("Error al actualizar el usuario");
+        }
+    }
+
+    public function getUserById($id) {
+        try {
+            $query = "SELECT * FROM usuaris WHERE id = :id";
+            
+            $stmt = $this->sql->prepare($query);
+            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            // Añadir log para ver qué datos estamos obteniendo
+            error_log("Datos obtenidos de la BD: " . print_r($result, true));
+            
+            if (!$result) {
+                throw new \Exception("Usuario no encontrado");
+            }
+            
+            return $result;
+        } catch (\PDOException $e) {
+            error_log("Error en getUserById: " . $e->getMessage());
+            throw new \Exception("Error al obtener el usuario");
+        }
+    }
 } 

@@ -37,4 +37,51 @@ function ctrlAdmin($request, $response, $container) {
         print_r($e);
         return $response;
     }
+}
+
+function ctrlAdminGetUser($request, $response, $container) {
+    try {
+        $id = $request->get('id', null);
+        if (empty($id)) {
+            throw new \Exception("ID de usuario no proporcionado");
+        }
+
+        $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
+        $user = $usuarisModel->getUserById($id);
+        
+        if (!$user) {
+            throw new \Exception("Usuario no encontrado");
+        }
+
+        // Establece correctamente la respuesta JSON
+        $response->setJson(['user' => $user]);
+        return $response;
+
+    } catch (\Exception $e) {
+        error_log("Error en getUser: " . $e->getMessage());
+        $response->setJson(['error' => $e->getMessage()]);
+        return $response;
+    }
+}
+
+function ctrlAdminUpdateUser($request, $response, $container) {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $container->usuaris()->updateUser($data['id'], $data);
+        $response->setJson(['success' => $result]);
+    } catch (\Exception $e) {
+        $response->setJson(['error' => $e->getMessage()], 500);
+    }
+    return $response;
+}
+
+function ctrlAdminDeleteUser($request, $response, $container) {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $container->usuaris()->deleteUser($data['id']);
+        $response->setJson(['success' => $result]);
+    } catch (\Exception $e) {
+        $response->setJson(['error' => $e->getMessage()], 500);
+    }
+    return $response;
 } 

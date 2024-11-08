@@ -85,6 +85,21 @@ ini_set('display_errors', 1);
             return ctrlAdmin($request, $response, $container);
         });
         break;
+    case "admin/getUser":
+        $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
+            return ctrlAdminGetUser($request, $response, $container);
+        });
+        break;
+    case "admin/updateUser":
+        $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
+            return ctrlAdminUpdateUser($request, $response, $container);
+        });
+        break;
+    case "admin/deleteUser":
+        $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
+            return ctrlAdminDeleteUser($request, $response, $container);
+        });
+        break;
     default:
         $response->set("error", "Ruta no encontrada");
         $response->setTemplate("404.php");
