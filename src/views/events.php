@@ -19,13 +19,16 @@
 
     <div class="container-fluid d-flex main-content-wrapper">
         <!-- Sidebar (similar a index.html) -->
-        <aside class="sidebar p-4 d-flex flex-column align-items-center">
+        <aside class="sidebar p-4">
         <div class="icon mb-4">
                 <img src="/uploads/images/logo1.png" alt="Logo" class="logo1">
             </div>
             <nav class="nav flex-column w-100">
                 <a href="/" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
-                <a href="?r=events" class="nav-link text-white active"><i class="fas fa-star"></i> Events</a>
+                <a href="?r=events" class="nav-link text-white">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-link-text">Events</span>
+                </a>
                 <a href="?r=profile" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
             </nav>
             <button id="logout-button" class="btn logout-btn mt-4 w-100" onclick="window.location.href='/?r=logout'">Cerrar Sesión</button>
