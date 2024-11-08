@@ -1192,6 +1192,7 @@ body {
 }
 
 .banner-image {
+    border-radius: 15px;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -1447,4 +1448,22 @@ body {
     color: #53d5cd;
     background: none;
     border-bottom: 2px solid #53d5cd;
+}
+
+/* Estilos unificados para los enlaces del menú */
+.nav-link {
+    display: flex !important;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    text-align: left;
+}
+
+.nav-link i {
+    margin-right: 0.5rem;
+    width: 20px; /* Asegura que todos los iconos ocupen el mismo espacio */
+    text-align: center;
+}
+
+.nav-link-text {
+    flex: 1;
 }
