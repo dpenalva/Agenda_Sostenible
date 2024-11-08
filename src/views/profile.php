@@ -19,7 +19,7 @@
             </div>
             <nav class="nav flex-column w-100">
                 <a href="/" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
-                <a href="?r=events" class="nav-link text-white"><i class="fas fa-star"></i> Events</a>
+                <a href="?r=events" class="nav-link text-white"><i class="fas fa-calendar-alt"></i> Events</a>
                 <a href="?r=profile" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
                 <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                     <a href="/?r=admin" class="nav-link text-white">
