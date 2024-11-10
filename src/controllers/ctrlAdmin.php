@@ -41,7 +41,7 @@ function ctrlAdmin($request, $response, $container) {
 
 function ctrlAdminGetUser($request, $response, $container) {
     try {
-        $id = $request->get('id', null);
+        $id = $request->get('GET', 'id');
         if (empty($id)) {
             throw new \Exception("ID de usuario no proporcionado");
         }
@@ -49,17 +49,22 @@ function ctrlAdminGetUser($request, $response, $container) {
         $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
         $user = $usuarisModel->getUserById($id);
         
+        // Debug log
+        error_log("Usuario encontrado: " . print_r($user, true));
+        
         if (!$user) {
             throw new \Exception("Usuario no encontrado");
         }
 
-        // Establece correctamente la respuesta JSON
-        $response->setJson(['user' => $user]);
+        // Asegurarse que la respuesta es JSON y tiene la estructura correcta
+        $response->setJson();
+        $response->set('user', $user);
         return $response;
 
     } catch (\Exception $e) {
         error_log("Error en getUser: " . $e->getMessage());
-        $response->setJson(['error' => $e->getMessage()]);
+        $response->setJson();
+        $response->set('error', $e->getMessage());
         return $response;
     }
 }

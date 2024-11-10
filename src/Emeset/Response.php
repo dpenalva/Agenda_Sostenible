@@ -130,9 +130,12 @@ class Response
      *
      * @return void
      */
-    public function setJSON()
-    {
+    public function setJson($data = null) {
         $this->json = true;
+        if ($data !== null) {
+            $this->values = $data;
+        }
+        header('Content-Type: application/json');
     }
 
     /**
@@ -142,10 +145,12 @@ class Response
      */
     public function response()
     {
+        if ($this->json) {
+            echo json_encode($this->values);
+            return;
+        }
         if ($this->redirect) {
             header($this->header);
-        } elseif ($this->json) {
-            echo json_encode($this->values);
         } else {
             if ($this->header !== false) {
                 header($this->header);

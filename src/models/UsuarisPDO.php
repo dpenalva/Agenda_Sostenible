@@ -267,16 +267,14 @@ class UsuarisPDO extends DB {
 
     public function getUserById($id) {
         try {
-            $query = "SELECT * FROM usuaris WHERE id = :id";
-            
+            $query = "SELECT id, nom, cognoms, nom_usuari, email, biografia FROM usuaris WHERE id = :id";
             $stmt = $this->sql->prepare($query);
-            $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':id' => $id]);
             
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            // Añadir log para ver qué datos estamos obteniendo
-            error_log("Datos obtenidos de la BD: " . print_r($result, true));
+            // Añadir log para debug
+            error_log("Query result: " . print_r($result, true));
             
             if (!$result) {
                 throw new \Exception("Usuario no encontrado");

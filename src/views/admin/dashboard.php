@@ -397,6 +397,43 @@
                 }
             });
         });
+
+        // Función para editar usuario
+        async function editUser(userId) {
+            try {
+                const response = await fetch(`?r=admin/getUser&id=${userId}`);
+                
+                // Debug de la respuesta
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers.get('Content-Type'));
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (!data || data.error) {
+                    throw new Error(data.error || 'Error desconocido al cargar los datos');
+                }
+
+                if (!data.user) {
+                    throw new Error('La respuesta no contiene datos de usuario');
+                }
+
+                // Rellenar el formulario con los datos del usuario
+                document.getElementById('userId').value = userId;
+                document.getElementById('userNom').value = data.user.nom || '';
+                document.getElementById('userCognoms').value = data.user.cognoms || '';
+                document.getElementById('userNomUsuari').value = data.user.nom_usuari || '';
+                document.getElementById('userEmail').value = data.user.email || '';
+                document.getElementById('userBiografia').value = data.user.biografia || '';
+                
+                // Mostrar el modal
+                const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+                editModal.show();
+            } catch (error) {
+                console.error('Error completo:', error);
+                alert('Error al cargar los datos del usuario: ' + error.message);
+            }
+        }
     });
     </script>
 </body>
