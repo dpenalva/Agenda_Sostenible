@@ -17,6 +17,35 @@ class EsdevenimentsPDO {
     }
 
     /**
+     * Obtiene todos los eventos ordenados por fecha
+     */
+    public function getAll() {
+        try {
+            $stmt = $this->sql->prepare("
+                SELECT 
+                    id,
+                    titol,
+                    descripcio,
+                    longitud,
+                    latitud,
+                    data_esdeveniment,
+                    hora_esdeveniment,
+                    visibilitat_esdeveniment,
+                    tipus_esdeveniment_id,
+                    id_usuari
+                FROM esdeveniments
+                ORDER BY data_esdeveniment DESC, hora_esdeveniment DESC
+            ");
+            
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            error_log("Error al obtener eventos: " . $e->getMessage());
+            throw new \Exception("Error al obtener los eventos");
+        }
+    }
+
+    /**
      * Obtiene todos los eventos de un usuario específico
      */
     public function getByUser($userId) {
@@ -82,52 +111,44 @@ class EsdevenimentsPDO {
     /**
      * Crea un nuevo evento
      */
-    public function create($data) {
+    public function create($eventData) {
         try {
-            $query = "INSERT INTO esdeveniments (
-                titol,
-                descripcio,
-                data_inici,
-                hora_inici,
-                ubicacio,
-                aforament,
-                tipus_esdeveniment_id,
-                imatge_url,
-                usuari_id,
-                created_at
-            ) VALUES (
-                :titol,
-                :descripcio,
-                :data_inici,
-                :hora_inici,
-                :ubicacio,
-                :aforament,
-                :tipus_esdeveniment_id,
-                :imatge_url,
-                :usuari_id,
-                NOW()
-            )";
+            $stmt = $this->sql->prepare("
+                INSERT INTO esdeveniments (
+                    titol, 
+                    descripcio, 
+                    longitud, 
+                    latitud, 
+                    data_esdeveniment, 
+                    hora_esdeveniment, 
+                    visibilitat_esdeveniment,
+                    id_usuari
+                ) VALUES (
+                    :titol, 
+                    :descripcio, 
+                    :longitud, 
+                    :latitud, 
+                    :data_esdeveniment, 
+                    :hora_esdeveniment, 
+                    :visibilitat_esdeveniment,
+                    :id_usuari
+                )
+            ");
 
-            $stmt = $this->sql->prepare($query);
-            $result = $stmt->execute([
-                ':titol' => $data['titol'],
-                ':descripcio' => $data['descripcio'],
-                ':data_inici' => $data['data_inici'],
-                ':hora_inici' => $data['hora_inici'],
-                ':ubicacio' => $data['ubicacio'],
-                ':aforament' => $data['aforament'],
-                ':tipus_esdeveniment_id' => $data['tipus_esdeveniment_id'],
-                ':imatge_url' => $data['imatge_url'] ?? null,
-                ':usuari_id' => $data['usuari_id']
+            $stmt->execute([
+                ':titol' => $eventData['titol'],
+                ':descripcio' => $eventData['descripcio'],
+                ':longitud' => $eventData['longitud'],
+                ':latitud' => $eventData['latitud'],
+                ':data_esdeveniment' => $eventData['data_esdeveniment'],
+                ':hora_esdeveniment' => $eventData['hora_esdeveniment'],
+                ':visibilitat_esdeveniment' => $eventData['visibilitat_esdeveniment'] ? 1 : 0,
+                ':id_usuari' => $_SESSION['user_id']
             ]);
 
-            if ($result) {
-                return $this->sql->lastInsertId();
-            }
-
-            throw new \Exception("Error al crear el evento");
+            return $this->sql->lastInsertId();
         } catch (\PDOException $e) {
-            error_log("Error en create: " . $e->getMessage());
+            error_log("Error al crear evento: " . $e->getMessage());
             throw new \Exception("Error al crear el evento");
         }
     }
@@ -146,10 +167,10 @@ class EsdevenimentsPDO {
 
     public function getRecentEvents($limit = 5) {
         try {
-            $query = "SELECT id, titol, data 
-                     FROM esdeveniments 
-                     ORDER BY id DESC 
-                     LIMIT :limit";
+            $query = "SELECT id, titol, descripcio, data_esdeveniment, hora_esdeveniment 
+                      FROM esdeveniments 
+                      ORDER BY data_esdeveniment DESC, hora_esdeveniment DESC 
+                      LIMIT :limit";
             
             $stmt = $this->sql->prepare($query);
             $stmt->bindValue(':limit', (int)$limit, \PDO::PARAM_INT);
@@ -157,7 +178,7 @@ class EsdevenimentsPDO {
             
             return $stmt->fetchAll();
         } catch (\PDOException $e) {
-            error_log("Error específico en getRecentEvents: " . $e->getMessage());
+            error_log("Error en getRecentEvents: " . $e->getMessage());
             return [];
         }
     }

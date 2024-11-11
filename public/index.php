@@ -100,6 +100,9 @@ ini_set('display_errors', 1);
             return ctrlAdminDeleteUser($request, $response, $container);
         });
         break;
+    case "createEvent":
+        $response = ctrlCreateEvent($request, $response, $container);
+        break;
     default:
         $response->set("error", "Ruta no encontrada");
         $response->setTemplate("404.php");
