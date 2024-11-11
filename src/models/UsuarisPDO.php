@@ -89,30 +89,22 @@ class UsuarisPDO extends DB {
      */
     public function get($id) {
         try {
-            $query = "SELECT 
-                        id,
-                        nom,
-                        cognoms,
-                        nom_usuari,
-                        email,
-                        imatge_perfil,
-                        biografia,
-                        banner
-                    FROM usuaris 
-                    WHERE id = :id";
+            $query = "SELECT id, nom, cognoms, email, nom_usuari, biografia, rol 
+                     FROM usuaris 
+                     WHERE id = :id";
             
             $stmt = $this->sql->prepare($query);
             $stmt->execute([':id' => $id]);
             
-            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            if (!$user) {
+            if (!$result) {
                 throw new \Exception("Usuario no encontrado");
             }
             
-            return $user;
+            return $result;
         } catch (\PDOException $e) {
-            error_log("Error en get: " . $e->getMessage());
+            error_log("Error getting user: " . $e->getMessage());
             throw new \Exception("Error al obtener el usuario");
         }
     }
@@ -247,7 +239,8 @@ class UsuarisPDO extends DB {
                          cognoms = :cognoms, 
                          email = :email,
                          nom_usuari = :nom_usuari,
-                         biografia = :biografia
+                         biografia = :biografia,
+                         rol = :rol
                      WHERE id = :id";
             
             $stmt = $this->sql->prepare($query);
@@ -257,6 +250,7 @@ class UsuarisPDO extends DB {
             $stmt->bindValue(':email', $data['email']);
             $stmt->bindValue(':nom_usuari', $data['nom_usuari']);
             $stmt->bindValue(':biografia', $data['biografia'] ?? '');
+            $stmt->bindValue(':rol', $data['rol']);
             
             return $stmt->execute();
         } catch (\PDOException $e) {

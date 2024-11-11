@@ -153,6 +153,7 @@
             }
         }
     </style>
+    <script src="/js/admin.js" defer></script>
 </head>
 <body>
     <div class="container-fluid d-flex main-content-wrapper">
@@ -210,9 +211,12 @@
                                 <td><?php echo htmlspecialchars($user['nom'] . ' ' . $user['cognoms']); ?></td>
                                 <td><?php echo htmlspecialchars($user['email']); ?></td>
                                 <td>
-                                <button type="button" class="btn btn-primary edit-user" data-id="<?php echo htmlspecialchars($user['id']); ?>">
-    <i class="fas fa-edit"></i> Editar
-</button>
+                                <button 
+                                    type="button"
+                                    onclick="loadUserData('<?php echo htmlspecialchars($user['id']); ?>')" 
+                                    class="btn btn-primary btn-sm">
+                                    Editar
+                                </button>
                                     <button class="btn btn-action delete-user" data-id="<?php echo htmlspecialchars($user['id']); ?>">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -291,6 +295,13 @@
                             <label for="userBiografia" class="form-label">Biografía</label>
                             <textarea class="form-control bg-dark text-white" id="userBiografia" rows="3"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="userRol" class="form-label">Rol</label>
+                            <select class="form-select bg-dark text-white" id="userRol">
+                                <option value="user">Usuario</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -302,139 +313,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-        
-        document.querySelectorAll('.edit-user').forEach(button => {
-            button.addEventListener('click', async function() {
-                const userId = this.getAttribute('data-id');
-                console.log('ID del usuario a editar:', userId);
-                
-                if (!userId) {
-                    alert('Error: No se encontró el ID del usuario');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`/?r=admin/getUser&id=${userId}`);
-                    const data = await response.json();
-                    console.log('Respuesta del servidor:', data);
-                    
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-                    
-                    // Rellenar el formulario con los datos del usuario
-                    document.getElementById('userId').value = userId;
-                    document.getElementById('userNom').value = data.user.nom;
-                    document.getElementById('userCognoms').value = data.user.cognoms;
-                    document.getElementById('userNomUsuari').value = data.user.nom_usuari;
-                    document.getElementById('userEmail').value = data.user.email;
-                    document.getElementById('userBiografia').value = data.user.biografia || '';
-                    
-                    editModal.show();
-                } catch (error) {
-                    console.error('Error completo:', error);
-                    alert('Error al cargar los datos del usuario: ' + error.message);
-                }
-            });
-        });
-
-        // Event listener para guardar cambios
-        document.getElementById('saveUserChanges').addEventListener('click', async function() {
-            const userId = document.getElementById('userId').value;
-            const userData = {
-                nom: document.getElementById('userNom').value,
-                cognoms: document.getElementById('userCognoms').value,
-                nom_usuari: document.getElementById('userNomUsuari').value,
-                email: document.getElementById('userEmail').value,
-                biografia: document.getElementById('userBiografia').value
-            };
-
-            try {
-                const response = await fetch('/?r=admin/updateUser', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({id: userId, ...userData})
-                });
-
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    throw new Error('Error al actualizar el usuario');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al actualizar el usuario');
-            }
-        });
-
-        // Event listeners para botones de eliminar
-        document.querySelectorAll('.delete-user').forEach(button => {
-            button.addEventListener('click', async function() {
-                if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-                    const userId = this.dataset.id;
-                    try {
-                        const response = await fetch('/?r=admin/deleteUser', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({id: userId})
-                        });
-
-                        if (response.ok) {
-                            location.reload();
-                        } else {
-                            alert('Error al eliminar el usuario');
-                        }
-                    } catch (error) {
-                        alert('Error al eliminar el usuario');
-                    }
-                }
-            });
-        });
-
-        // Función para editar usuario
-        async function editUser(userId) {
-            try {
-                const response = await fetch(`?r=admin/getUser&id=${userId}`);
-                
-                // Debug de la respuesta
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers.get('Content-Type'));
-                
-                const data = await response.json();
-                console.log('Response data:', data);
-
-                if (!data || data.error) {
-                    throw new Error(data.error || 'Error desconocido al cargar los datos');
-                }
-
-                if (!data.user) {
-                    throw new Error('La respuesta no contiene datos de usuario');
-                }
-
-                // Rellenar el formulario con los datos del usuario
-                document.getElementById('userId').value = userId;
-                document.getElementById('userNom').value = data.user.nom || '';
-                document.getElementById('userCognoms').value = data.user.cognoms || '';
-                document.getElementById('userNomUsuari').value = data.user.nom_usuari || '';
-                document.getElementById('userEmail').value = data.user.email || '';
-                document.getElementById('userBiografia').value = data.user.biografia || '';
-                
-                // Mostrar el modal
-                const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                editModal.show();
-            } catch (error) {
-                console.error('Error completo:', error);
-                alert('Error al cargar los datos del usuario: ' + error.message);
-            }
-        }
-    });
-    </script>
+    <script src="/js/admin.js"></script>
 </body>
 </html> 
