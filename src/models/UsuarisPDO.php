@@ -280,4 +280,41 @@ class UsuarisPDO extends DB {
             throw new \Exception("Error al obtener el usuario");
         }
     }
+
+    public function createUser($data) {
+        try {
+            // Verificar si el email existe
+            $query = "SELECT COUNT(*) FROM usuaris WHERE email = :email";
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute([':email' => $data['email']]);
+            
+            if ((int)$stmt->fetchColumn() > 0) {
+                throw new \Exception("El email ya está registrado");
+            }
+
+            // Si el email no existe, proceder con la inserción
+            $query = "INSERT INTO usuaris (nom, cognoms, email, nom_usuari, password, rol) 
+                     VALUES (:nom, :cognoms, :email, :nom_usuari, :password, :rol)";
+            
+            $stmt = $this->sql->prepare($query);
+            $result = $stmt->execute([
+                ':nom' => $data['nom'],
+                ':cognoms' => $data['cognoms'] ?? '',
+                ':email' => $data['email'],
+                ':nom_usuari' => $data['nom_usuari'],
+                ':password' => $data['password'],
+                ':rol' => $data['rol'] ?? 'user'
+            ]);
+
+            if (!$result) {
+                throw new \Exception("Error al crear el usuario");
+            }
+            
+            return $this->sql->lastInsertId();
+            
+        } catch (\PDOException $e) {
+            error_log("Error creating user: " . $e->getMessage());
+            throw new \Exception("Error al crear el usuario");
+        }
+    }
 } 

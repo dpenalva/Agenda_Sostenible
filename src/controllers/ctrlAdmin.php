@@ -97,4 +97,34 @@ function ctrlAdminDeleteUser($request, $response, $container) {
         $response->setJson(['error' => $e->getMessage()], 500);
     }
     return $response;
+}
+
+function ctrlAdminAddUser($request, $response, $container) {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        // Validaciones básicas
+        if (empty($data['nom']) || empty($data['email']) || empty($data['password'])) {
+            throw new \Exception("Todos los campos son obligatorios");
+        }
+
+        // Hash de la contraseña
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        
+        // Intentar crear el usuario (la verificación del email se hará en el modelo)
+        $usuaris = $container->usuaris();
+        $result = $usuaris->createUser($data);
+        
+        $response->setJson([
+            'success' => true,
+            'userId' => $result
+        ]);
+        
+    } catch (\Exception $e) {
+        $response->setJson([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+    return $response;
 } 

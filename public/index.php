@@ -100,6 +100,11 @@ ini_set('display_errors', 1);
             return ctrlAdminDeleteUser($request, $response, $container);
         });
         break;
+    case "admin/addUser":
+        $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
+            return ctrlAdminAddUser($request, $response, $container);
+        });
+        break;
     default:
         $response->set("error", "Ruta no encontrada");
         $response->setTemplate("404.php");

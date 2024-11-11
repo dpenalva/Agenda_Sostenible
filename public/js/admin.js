@@ -69,6 +69,81 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    async function deleteUser(userId) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('?r=admin/deleteUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: userId })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Recargar la página para ver los cambios
+                window.location.reload();
+            } else {
+                throw new Error(data.error || 'Error al eliminar el usuario');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el usuario: ' + error.message);
+        }
+    }
+
+    // Hacer la función deleteUser disponible globalmente
+    window.deleteUser = deleteUser;
+
     // Hacer la función loadUserData disponible globalmente
     window.loadUserData = loadUserData;
+
+    // Manejador para añadir nuevo usuario
+    document.getElementById('saveNewUser')?.addEventListener('click', async function(e) {
+        e.preventDefault();
+        try {
+            const form = document.getElementById('addUserForm');
+
+
+            const formData = new FormData(form);
+            const userData = Object.fromEntries(formData.entries());
+
+            const response = await fetch('?r=admin/addUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                modal.hide();
+                
+                // Limpiar formulario
+                form.reset();
+                
+                // Mostrar mensaje de éxito
+                alert('Usuario creado correctamente');
+                
+                // Recargar página
+                window.location.reload();
+            } else {
+                // Mostrar mensaje de error
+                throw new Error(data.error || 'Error al crear el usuario');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        }
+    });
 });

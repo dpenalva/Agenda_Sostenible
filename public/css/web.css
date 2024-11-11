@@ -1467,3 +1467,52 @@ body {
 .nav-link-text {
     flex: 1;
 }
+
+.table-scroll-container {
+    max-height: 300px;
+    overflow-y: auto;
+    position: relative;
+    margin-right: 2px;
+}
+
+/* Estilo para la barra de desplazamiento */
+.table-scroll-container::-webkit-scrollbar {
+    width: 8px;
+    display: none;
+}
+
+.table-scroll-container:hover::-webkit-scrollbar {
+    display: block;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Mantener el encabezado fijo */
+.table-fixed-header {
+    position: relative;
+    width: 100%;
+}
+
+.table-fixed-header thead th {
+    position: sticky;
+    top: 0;
+    background-color: #212529;
+    z-index: 1;
+}
+
+/* Asegurar que las filas de la tabla tengan una altura mínima */
+.table-fixed-header tbody tr {
+    height: 48px;
+}
