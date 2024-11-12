@@ -11,7 +11,6 @@ class Calendar {
         window.calendarInstance = this;
         
         this.init();
-        console.log('Calendario inicializado');
     }
 
     init() {
@@ -22,19 +21,15 @@ class Calendar {
 
     loadSavedEvents() {
         const events = localStorage.getItem('interestedEvents');
-        console.log('Eventos raw del localStorage:', events);
         this.savedEvents = events ? JSON.parse(events) : [];
-        console.log('Eventos parseados:', this.savedEvents);
     }
 
     hasEventsOnDate(day) {
         const currentDate = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        console.log('Verificando eventos para fecha:', currentDate);
         
         return this.savedEvents.some(event => {
             const eventDate = new Date(event.event_date);
             const eventDateString = eventDate.toISOString().split('T')[0];
-            console.log('Comparando con evento fecha:', eventDateString);
             
             return eventDateString === currentDate;
         });
@@ -140,6 +135,5 @@ class Calendar {
 
 // Asegurarse de que el calendario se inicializa
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM cargado, inicializando calendario');
     new Calendar();
 });

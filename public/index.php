@@ -60,15 +60,18 @@ ini_set('display_errors', 1);
         $response = ctrlLogout($request, $response, $container);
         break;
     case "events":
-        $response = ctrlEventsPage($request, $response, $container);
+        $response = ctrlEvents($request, $response, $container);
+        break;
+    case "toggleEventLike":
+        $response = ctrlToggleEventLike($request, $response, $container);
         break;
     case "profile":
         $response = ctrlProfile($request, $response, $container);
         break;
-    case "api/events/create":
+    case "createEvent":
         $response = ctrlCreateEvent($request, $response, $container);
         break;
-    case "api/events/get":
+    case "getEvents":
         $response = ctrlGetEvents($request, $response, $container);
         break;
     case "updateProfileImage":
@@ -105,9 +108,6 @@ ini_set('display_errors', 1);
         $response->setTemplate("404.php");
 }
 
- /* Enviem la resposta al client. */
- $response->response();
-
 // Verificar si hay sesión activa
 $isLoggedIn = isset($_SESSION['user_id']);
 $response->set("isLoggedIn", $isLoggedIn);
@@ -123,3 +123,6 @@ if ($isLoggedIn) {
         $response->set("error", "Error al cargar los datos del usuario");
     }
 }
+
+/* Enviem la resposta al client. */
+$response->response();

@@ -41,24 +41,98 @@
             <h2 class="text-white mb-3">Home</h2>
 
             <!-- Área de creación de evento -->
-            <div class="post-creation-area">
-                <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
-                    <div class="create-event-wrapper">
-                        <div class="create-event-left">
-                            <img src="../../public/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle" style="width: 48px; height: 48px;">
-                            <div class="create-event-placeholder">¿Tienes un evento para compartir?</div>
-                        </div>
-                        <div class="create-event-button">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span>Crear evento</span>
+            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                <div class="post-creation-area">
+                    <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                        <div class="create-event-wrapper">
+                            <div class="create-event-left">
+                                <img src="/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle" style="width: 48px; height: 48px;">
+                                <div class="create-event-placeholder">¿Tienes un evento para compartir?</div>
+                            </div>
+                            <div class="create-event-button">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Crear evento</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <!-- Feed de eventos -->
             <div class="events-feed mt-4">
-                <!-- Los eventos se mostrarán aquí -->
+                <?php if (isset($eventos) && !empty($eventos)): ?>
+                    <?php foreach ($eventos as $evento): ?>
+                        <div class="event-card mb-4" data-event-id="<?php echo $evento['id']; ?>">
+                            <div class="card bg-dark text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <?php echo htmlspecialchars($evento['titol'] ?? 'Sin título'); ?>
+                                    </h5>
+                                    <p class="card-text">
+                                        <?php echo htmlspecialchars($evento['descripcio'] ?? 'Sin descripción'); ?>
+                                    </p>
+                                    <div class="event-details">
+                                        <div class="detail">
+                                            <i class="fas fa-calendar"></i>
+                                            <?php 
+                                                $fecha = !empty($evento['data_esdeveniment']) 
+                                                    ? date('d/m/Y', strtotime($evento['data_esdeveniment'])) 
+                                                    : 'Fecha no especificada';
+                                                echo $fecha;
+                                            ?>
+                                        </div>
+                                        <div class="detail">
+                                            <i class="fas fa-clock"></i>
+                                            <?php 
+                                                $hora = !empty($evento['hora_esdeveniment']) 
+                                                    ? date('H:i', strtotime($evento['hora_esdeveniment'])) 
+                                                    : 'Hora no especificada';
+                                                echo $hora;
+                                            ?>
+                                        </div>
+                                        <div class="detail">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <?php 
+                                                $ubicacion = (!empty($evento['longitud']) && !empty($evento['latitud']))
+                                                    ? htmlspecialchars($evento['longitud'] . ', ' . $evento['latitud'])
+                                                    : 'Ubicación no especificada';
+                                                echo $ubicacion;
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="visibility-badge">
+                                        <i class="fas fa-eye"></i>
+                                        <?php echo isset($evento['visibilitat_esdeveniment']) && $evento['visibilitat_esdeveniment'] ? 'Público' : 'Privado'; ?>
+                                    </div>
+                                    <div class="event-interactions mt-3">
+                                        <button 
+                                            class="like-button <?php echo isset($evento['is_liked']) && $evento['is_liked'] ? 'liked' : ''; ?>"
+                                            data-event-id="<?php echo $evento['id']; ?>"
+                                            onclick="toggleLike(<?php echo $evento['id']; ?>)"
+                                        >
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        
+                                        <div class="rating-container d-inline-block ms-3">
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fas fa-star rating-star" 
+                                                   data-rating="<?php echo $i; ?>"
+                                                   onclick="rateEvent(<?php echo $evento['id']; ?>, <?php echo $i; ?>)"
+                                                   style="color: <?php echo (isset($evento['user_rating']) && $evento['user_rating'] >= $i) ? '#ffc107' : '#6c757d'; ?>">
+                                                </i>
+                                            <?php endfor; ?>
+                                            <span class="average-rating ms-2">(<?php echo number_format($evento['average_rating'] ?? 0, 1); ?>)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="text-center text-muted mt-4">
+                        <p>No hay eventos disponibles en este momento.</p>
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
 
@@ -74,5 +148,57 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="/js/calendar.js"></script>
     <script src="/js/events.js"></script>
+
+    <!-- Modal para crear evento -->
+    <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEventModalLabel">Crear Nuevo Evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createEventForm">
+                        <div class="mb-3">
+                            <label for="titol" class="form-label">Título</label>
+                            <input type="text" class="form-control bg-dark text-white" id="titol" name="titol" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcio" class="form-label">Descripción</label>
+                            <textarea class="form-control bg-dark text-white" id="descripcio" name="descripcio" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="data_esdeveniment" class="form-label">Fecha</label>
+                            <input type="date" class="form-control bg-dark text-white" id="data_esdeveniment" name="data_esdeveniment" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="hora_esdeveniment" class="form-label">Hora</label>
+                            <input type="time" class="form-control bg-dark text-white" id="hora_esdeveniment" name="hora_esdeveniment" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="longitud" class="form-label">Longitud</label>
+                            <input type="text" class="form-control bg-dark text-white" id="longitud" name="longitud" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="latitud" class="form-label">Latitud</label>
+                            <input type="text" class="form-control bg-dark text-white" id="latitud" name="latitud" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="visibilitat_esdeveniment" name="visibilitat_esdeveniment" checked>
+                                <label class="form-check-label" for="visibilitat_esdeveniment">
+                                    Evento público
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveEventButton">Crear Evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

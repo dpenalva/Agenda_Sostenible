@@ -1,245 +1,200 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const eventForm = document.getElementById('createEventForm');
-    const dropZone = document.querySelector('.drop-zone');
-    const imageInput = document.getElementById('eventImage');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImg = imagePreview.querySelector('img');
+    // Función para crear eventos
+    function initializeEventCreation() {
+        const createEventForm = document.getElementById('createEventForm');
+        const saveEventButton = document.getElementById('saveEventButton');
 
-    // Manejar drag & drop
-    dropZone.addEventListener('click', () => imageInput.click());
-    
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        
-        if (e.dataTransfer.files.length) {
-            handleImageUpload(e.dataTransfer.files[0]);
-        }
-    });
-
-    // Manejar selección de archivo
-    imageInput.addEventListener('change', (e) => {
-        if (e.target.files.length) {
-            handleImageUpload(e.target.files[0]);
-        }
-    });
-
-    // Función para manejar la imagen
-    function handleImageUpload(file) {
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImg.src = e.target.result;
-                imagePreview.classList.remove('d-none');
-                dropZone.style.display = 'none';
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // Manejar envío del formulario
-    eventForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Validar que haya una imagen
-        if (!previewImg.src) {
-            alert('Por favor, selecciona una imagen para el evento');
+        if (!createEventForm || !saveEventButton) {
+            console.log('Elementos del formulario no encontrados');
             return;
         }
-        
-        const eventData = {
-            title: document.getElementById('eventTitle').value,
-            description: document.getElementById('eventDescription').value,
-            event_date: document.getElementById('eventDate').value,
-            event_time: document.getElementById('eventTime').value,
-            location: document.getElementById('eventLocation').value,
-            capacity: document.getElementById('eventCapacity').value,
-            event_type: document.getElementById('eventType').value,
-            image_url: previewImg.src,
-            username: 'Usuario Actual',
-            created_at: new Date().toISOString()
-        };
 
-        // Crear y añadir la tarjeta del evento
-        const eventCard = createEventCard(eventData);
-        const eventsFeed = document.querySelector('.events-feed');
-        
-        if (eventsFeed.firstChild) {
-            eventsFeed.insertBefore(eventCard, eventsFeed.firstChild);
-        } else {
-            eventsFeed.appendChild(eventCard);
-        }
+        saveEventButton.addEventListener('click', async function(e) {
+            e.preventDefault();
 
-        // Cerrar modal y limpiar formulario
-        const modal = bootstrap.Modal.getInstance(document.getElementById('createEventModal'));
-        modal.hide();
-        eventForm.reset();
-        imagePreview.classList.add('d-none');
-        dropZone.style.display = 'block';
-    });
+            if (!createEventForm.checkValidity()) {
+                createEventForm.reportValidity();
+                return;
+            }
 
-    function createEventCard(event) {
-        console.log('Evento recibido:', event);
-        console.log('Fecha del evento:', event.event_date);
-        console.log('Tipo de fecha:', typeof event.event_date);
+            // Recoger los datos del formulario
+            const formData = new FormData(createEventForm);
+            const eventData = {};
 
-        const card = document.createElement('div');
-        card.className = 'event-card';
-        
-        const formattedDate = new Date(event.event_date).toLocaleDateString('es-ES', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+            // Convertir FormData a un objeto plano
+            formData.forEach((value, key) => {
+                eventData[key] = value;
+            });
 
-        card.innerHTML = `
-            <div class="event-card-content">
-                <div class="event-header">
-                    <img src="../../public/uploads/images/default-avatar.png" 
-                         alt="Avatar" 
-                         class="rounded-circle" 
-                         style="width: 40px; height: 40px; object-fit: cover;">
-                    <div class="event-author">
-                        <strong class="text-white">${event.username}</strong>
-                        <span class="text-muted small">ha creado un evento</span>
-                    </div>
-                </div>
-                
-                ${event.image_url ? `
-                    <div class="event-image">
-                        <img src="${event.image_url}" 
-                             alt="${event.title}" 
-                             class="event-main-image">
-                    </div>
-                ` : ''}
-                
-                <div class="event-details">
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-description">${event.description || ''}</p>
-                    
-                    <div class="event-info">
-                        <div class="info-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>${formattedDate}</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-clock"></i>
-                            <span>${event.event_time}</span>
-                        </div>
-                        ${event.location ? `
-                            <div class="info-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>${event.location}</span>
-                            </div>
-                        ` : ''}
-                        ${event.capacity ? `
-                            <div class="info-item">
-                                <i class="fas fa-users"></i>
-                                <span>${event.capacity} personas</span>
-                            </div>
-                        ` : ''}
-                        <div class="info-item">
-                            <i class="fas fa-tag"></i>
-                            <span>${event.event_type}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="event-actions mt-3">
-                        <button class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-star"></i> Me interesa
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm">
-                            <i class="fas fa-share"></i> Compartir
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+            // Manejar específicamente el checkbox
+            eventData.visibilitat_esdeveniment = document.getElementById('visibilitat_esdeveniment').checked;
 
-        const interestButton = card.querySelector('.btn-outline-primary');
-        
-        // Siempre empezar sin marcar
-        interestButton.classList.remove('active');
-        interestButton.style.backgroundColor = '';
-        interestButton.style.color = '';
-
-        interestButton.addEventListener('click', function() {
-            const isInterested = this.classList.contains('active');
-            
-            if (!isInterested) {
-                // Marcar como interesado
-                this.classList.add('active');
-                this.style.backgroundColor = '#53d5cd';
-                this.style.color = '#15181c';
-                
-                saveEventToCalendar({
-                    id: event.id,
-                    title: event.title,
-                    event_date: event.event_date,
-                    event_time: event.event_time
+            try {
+                const response = await fetch('?r=createEvent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(eventData)
                 });
-            } else {
-                // Desmarcar interés
-                this.classList.remove('active');
-                this.style.backgroundColor = '';
-                this.style.color = '';
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
                 
-                removeEventFromCalendar(event.id);
+                if (data.success) {
+                    // Cerrar el modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('createEventModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    
+                    // Recargar la página para mostrar el nuevo evento
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Error al crear el evento');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al procesar la solicitud');
             }
         });
-
-        return card;
     }
 
-    // Funciones auxiliares para manejar eventos en el calendario
-    function saveEventToCalendar(event) {
-        // Asegurarnos de que la fecha está en el formato correcto
-        let eventToSave = {
-            ...event,
-            event_date: new Date(event.event_date).toISOString().split('T')[0]
-        };
+    // Inicializar la creación de eventos
+    initializeEventCreation();
 
-        console.log('Guardando evento formateado:', eventToSave);
+    // Función para manejar los likes
+    window.toggleLike = async function(eventId) {
+        try {
+            const response = await fetch('?r=toggleEventLike', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ eventId: eventId })
+            });
 
-        let savedEvents = JSON.parse(localStorage.getItem('interestedEvents') || '[]');
-        if (!savedEvents.some(e => e.id === eventToSave.id)) {
-            savedEvents.push(eventToSave);
-            localStorage.setItem('interestedEvents', JSON.stringify(savedEvents));
-            console.log('Estado actual del localStorage:', localStorage.getItem('interestedEvents'));
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // Si estamos en la página de eventos favoritos
+                if (window.location.href.includes('?r=events')) {
+                    const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+                    if (eventCard) {
+                        // Animación de desvanecimiento
+                        eventCard.style.transition = 'opacity 0.3s ease';
+                        eventCard.style.opacity = '0';
+                        setTimeout(() => {
+                            eventCard.remove();
+                            // Si no quedan eventos, mostrar mensaje
+                            const savedEvents = document.querySelector('.saved-events');
+                            if (savedEvents && !savedEvents.querySelector('.event-card')) {
+                                savedEvents.innerHTML = '<p class="text-muted">No tienes eventos guardados como favoritos.</p>';
+                            }
+                        }, 300);
+                    }
+                } else {
+                    // Si estamos en otra página (como index.php)
+                    const button = document.querySelector(`.like-button[data-event-id="${eventId}"]`);
+                    if (button) {
+                        button.classList.toggle('liked');
+                        const icon = button.querySelector('i.fa-heart');
+                        if (icon) {
+                            icon.style.color = data.isLiked ? '#53d5cd' : '#6c757d';
+                        }
+                    }
+                }
+            } else {
+                console.error('Error:', data.message);
+                alert(data.message || 'Error al procesar la acción');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al procesar la acción');
         }
+    };
 
-        // Forzar actualización del calendario
-        if (window.calendarInstance) {
-            window.calendarInstance.loadSavedEvents();
-            window.calendarInstance.renderCalendar();
-            console.log('Calendario actualizado');
-        } else {
-            console.log('No se encontró instancia del calendario');
+    // Función para manejar las calificaciones
+    async function rateEvent(eventId, rating) {
+        try {
+            const response = await fetch('?r=rateEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ eventId, rating })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // Actualizar las estrellas visuales
+                updateRatingStars(eventId, rating, data.averageRating);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al calificar el evento');
         }
     }
 
-    function removeEventFromCalendar(eventId) {
-        let savedEvents = JSON.parse(localStorage.getItem('interestedEvents') || '[]');
-        savedEvents = savedEvents.filter(e => e.id !== eventId);
-        console.log('Eventos después de eliminar:', savedEvents);
-        localStorage.setItem('interestedEvents', JSON.stringify(savedEvents));
+    // Función para actualizar las estrellas visuales
+    function updateRatingStars(eventId, userRating, averageRating) {
+        const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+        const stars = eventCard.querySelectorAll('.rating-star');
+        const averageSpan = eventCard.querySelector('.average-rating');
+
+        stars.forEach((star, index) => {
+            star.style.color = index < userRating ? '#ffc107' : '#6c757d';
+        });
+
+        if (averageSpan) {
+            averageSpan.textContent = `(${averageRating.toFixed(1)})`;
+        }
+    }
+
+    // Función para actualizar eventos guardados
+    function updateSavedEvents(eventId, isLiked) {
+        let savedEvents = JSON.parse(localStorage.getItem('savedEvents') || '[]');
         
-        if (window.calendarInstance) {
-            window.calendarInstance.loadSavedEvents();
-            window.calendarInstance.renderCalendar();
+        if (isLiked) {
+            if (!savedEvents.includes(eventId)) {
+                savedEvents.push(eventId);
+            }
+        } else {
+            savedEvents = savedEvents.filter(id => id !== eventId);
         }
+        
+        localStorage.setItem('savedEvents', JSON.stringify(savedEvents));
     }
 
-    // Actualizar el estilo del dropZone para indicar que es obligatorio
-    dropZone.style.borderColor = '#53d5cd';
+    // Añadir estilos CSS para el botón de like
+    const style = document.createElement('style');
+    style.textContent = `
+        .like-button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+        .like-button i {
+            color: #6c757d;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        .like-button.liked i {
+            color: #53d5cd;
+        }
+        .event-card {
+            transition: opacity 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
 });
