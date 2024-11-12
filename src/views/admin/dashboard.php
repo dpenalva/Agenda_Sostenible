@@ -153,7 +153,6 @@
             }
         }
     </style>
-    <script src="/js/admin.js" defer></script>
 </head>
 <body>
     <div class="container-fluid d-flex main-content-wrapper">
