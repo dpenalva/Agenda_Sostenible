@@ -65,11 +65,11 @@ function ctrlLogin($request, $response, $container) {
 function ctrlRegister($request, $response, $container) {
     try {
         if ($request->getMethod() === 'POST') {
-            // Recoger los datos del formulario
+            // Mapear los campos del formulario a los nombres de la base de datos
             $data = [
-                'nom' => $request->get('POST', 'nom'),
-                'cognoms' => $request->get('POST', 'cognoms'),
-                'nom_usuari' => $request->get('POST', 'nom_usuari'),
+                'nombre' => $request->get('POST', 'nombre'),
+                'apellido' => $request->get('POST', 'apellido'),
+                'username' => $request->get('POST', 'username'),
                 'email' => $request->get('POST', 'email'),
                 'password' => $request->get('POST', 'password')
             ];
@@ -97,36 +97,19 @@ function ctrlRegister($request, $response, $container) {
             if ($userId) {
                 // Iniciar sesión automáticamente
                 $_SESSION['user_id'] = $userId;
-                $_SESSION['user_name'] = $data['nom'];
+                $_SESSION['user_name'] = $data['nombre'];
                 $_SESSION['user_email'] = $data['email'];
-
-                if ($request->isAjax()) {
-                    $response->setJson();
-                    $response->set("success", true);
-                    $response->set("message", "Registro exitoso");
-                    $response->set("redirect", "/");
-                    return $response;
-                }
+                $_SESSION['user_role'] = 'user';
 
                 header("Location: /");
                 exit();
             }
         }
 
-        // Si no es POST, mostrar el formulario
         $response->setTemplate("register.php");
         return $response;
 
     } catch (\Exception $e) {
-        error_log("Error en registro: " . $e->getMessage());
-
-        if ($request->isAjax()) {
-            $response->setJson();
-            $response->set("success", false);
-            $response->set("message", $e->getMessage());
-            return $response;
-        }
-
         $response->set("error", $e->getMessage());
         $response->setTemplate("register.php");
         return $response;

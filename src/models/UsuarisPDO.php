@@ -36,23 +36,37 @@ class UsuarisPDO extends DB {
 
     public function register($data) {
         try {
-            $query = "INSERT INTO usuaris (nom, cognoms, nom_usuari, email, password, rol) 
-                      VALUES (:nom, :cognoms, :nom_usuari, :email, :password, :rol)";
+            // Verificar si el email o nombre de usuario ya existe
+            $query = "SELECT COUNT(*) FROM usuaris WHERE email = :email OR nom_usuari = :username";
             $stmt = $this->sql->prepare($query);
-
-            $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
-            $rol = $data['rol'] ?? 'user'; // Por defecto será 'user'
-
             $stmt->execute([
-                ':nom' => $data['nom'],
-                ':cognoms' => $data['cognoms'],
-                ':nom_usuari' => $data['nom_usuari'],
                 ':email' => $data['email'],
-                ':password' => $hashedPassword,
-                ':rol' => $rol
+                ':username' => $data['username']
+            ]);
+            
+            if ((int)$stmt->fetchColumn() > 0) {
+                throw new \Exception("El email o nombre de usuario ya está registrado");
+            }
+
+            // Insertar nuevo usuario
+            $query = "INSERT INTO usuaris (nom, cognoms, nom_usuari, email, password, rol) 
+                     VALUES (:nom, :cognoms, :nom_usuari, :email, :password, 'user')";
+            
+            $stmt = $this->sql->prepare($query);
+            $result = $stmt->execute([
+                ':nom' => $data['nombre'],
+                ':cognoms' => $data['apellido'],
+                ':nom_usuari' => $data['username'],
+                ':email' => $data['email'],
+                ':password' => password_hash($data['password'], PASSWORD_DEFAULT)
             ]);
 
+            if (!$result) {
+                throw new \Exception("Error al registrar el usuario");
+            }
+            
             return $this->sql->lastInsertId();
+            
         } catch (\PDOException $e) {
             error_log("Error registering user: " . $e->getMessage());
             throw new \Exception("Error al registrar el usuario");
