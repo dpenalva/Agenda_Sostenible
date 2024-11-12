@@ -41,35 +41,47 @@ function ctrlAdmin($request, $response, $container) {
 
 function ctrlAdminGetUser($request, $response, $container) {
     try {
-        // Añadir logs para depuración
-        error_log("Iniciando ctrlAdminGetUser");
+        // Asegurarnos de que no hay salida previa
+        ob_clean();
         
         $userId = $request->get('GET', 'id');
-        error_log("UserId recibido: " . ($userId ?? 'null'));
-        
+        error_log("ID recibido: " . $userId);
+
         if (!$userId) {
             throw new \Exception("ID de usuario no proporcionado");
         }
 
-        // Obtener los datos del usuario
         $usuarisModel = $container->usuaris();
-        $user = $usuarisModel->get($userId);
-        
-        error_log("Datos de usuario obtenidos: " . json_encode($user));
+        $user = $usuarisModel->getUserById($userId);
         
         if (!$user) {
             throw new \Exception("Usuario no encontrado");
         }
 
-        // Configurar la respuesta JSON
-        $response->setJson();
-        $response->set("success", true);
-        $response->set("user", $user);
+        // Debug: ver qué datos estamos recibiendo
+        error_log("Datos del usuario antes de JSON: " . print_r($user, true));
+
+        // Preparar la respuesta
+        $responseData = [
+            'success' => true,
+            'user' => $user
+        ];
+
+        // Convertir a JSON manualmente
+        $jsonResponse = json_encode($responseData, JSON_UNESCAPED_UNICODE);
         
-        return $response;
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("Error en la codificación JSON: " . json_last_error_msg());
+            throw new \Exception("Error al procesar los datos");
+        }
+
+        // Establecer headers
+        header('Content-Type: application/json');
+        echo $jsonResponse;
+        exit;
 
     } catch (\Exception $e) {
-        error_log("Error en ctrlAdminGetUser: " . $e->getMessage());
+        $response->setHeader('Content-Type', 'application/json');
         $response->setJson();
         $response->set("success", false);
         $response->set("error", $e->getMessage());

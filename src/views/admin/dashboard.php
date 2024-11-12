@@ -216,7 +216,8 @@
                                     <td class="text-white"><?php echo htmlspecialchars($user['nom']); ?></td>
                                     <td class="text-white"><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td>
-                                        <button class="btn btn-info btn-sm" onclick="loadUserData(<?php echo $user['id']; ?>)">
+                                        <button type="button" class="btn btn-primary btn-sm" 
+                                            onclick="loadUserData('<?php echo $user['id']; ?>')">
                                             <i class="fas fa-edit"></i> Editar
                                         </button>
                                         <button class="btn btn-danger btn-sm" onclick="deleteUser(<?php echo $user['id']; ?>)">
@@ -282,43 +283,49 @@
     <div class="modal fade" id="editUserModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
-                <div class="modal-header">
+                <div class="modal-header border-secondary">
                     <h5 class="modal-title">Editar Usuario</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="editUserForm">
-                        <input type="hidden" id="userId">
+                        <input type="hidden" id="userId" name="id">
                         <div class="mb-3">
                             <label for="userNom" class="form-label">Nombre</label>
-                            <input type="text" class="form-control bg-dark text-white" id="userNom" required>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" 
+                                   id="userNom" name="nom" required>
                         </div>
                         <div class="mb-3">
                             <label for="userCognoms" class="form-label">Apellidos</label>
-                            <input type="text" class="form-control bg-dark text-white" id="userCognoms" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="userNomUsuari" class="form-label">Nombre de Usuario</label>
-                            <input type="text" class="form-control bg-dark text-white" id="userNomUsuari" required>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" 
+                                   id="userCognoms" name="cognoms" required>
                         </div>
                         <div class="mb-3">
                             <label for="userEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control bg-dark text-white" id="userEmail" required>
+                            <input type="email" class="form-control bg-dark text-white border-secondary" 
+                                   id="userEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="userNomUsuari" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" 
+                                   id="userNomUsuari" name="nom_usuari" required>
                         </div>
                         <div class="mb-3">
                             <label for="userBiografia" class="form-label">Biografía</label>
-                            <textarea class="form-control bg-dark text-white" id="userBiografia" rows="3"></textarea>
+                            <textarea class="form-control bg-dark text-white border-secondary" 
+                                      id="userBiografia" name="biografia" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="userRol" class="form-label">Rol</label>
-                            <select class="form-select bg-dark text-white" id="userRol">
+                            <select class="form-select bg-dark text-white border-secondary" 
+                                    id="userRol" name="rol">
                                 <option value="user">Usuario</option>
                                 <option value="admin">Administrador</option>
                             </select>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer border-secondary">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="saveUserChanges">Guardar</button>
                 </div>

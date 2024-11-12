@@ -1,27 +1,44 @@
 document.addEventListener('DOMContentLoaded', function () {
     async function loadUserData(userId) {
         try {
-            if (!userId) {
-                throw new Error('ID de usuario no proporcionado');
+            console.log('Iniciando loadUserData con ID:', userId);
+            
+            const response = await fetch(`?r=admin/getUser&id=${encodeURIComponent(userId)}`);
+            
+            // Verificar el tipo de contenido
+            console.log('Content-Type:', response.headers.get('Content-Type'));
+            
+            // Ver la respuesta en texto plano
+            const textResponse = await response.text();
+            console.log('Respuesta en texto plano:', textResponse);
+            
+            // Intentar parsear como JSON
+            let data;
+            try {
+                data = JSON.parse(textResponse);
+            } catch (e) {
+                console.error('Error al parsear JSON:', e);
+                throw new Error('La respuesta del servidor no es JSON válido');
             }
 
-            console.log('Cargando datos para usuario ID:', userId);
+            console.log('Datos parseados:', data);
 
-            const response = fetch(`?r=admin/getUser&id=${encodeURIComponent(userId)}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('userId').value = data.user.id;
-                    document.getElementById('userNom').value = data.user.nom || '';
-                    document.getElementById('userCognoms').value = data.user.cognoms || '';
-                    document.getElementById('userNomUsuari').value = data.user.nom_usuari || '';
-                    document.getElementById('userEmail').value = data.user.email || '';
-                    document.getElementById('userBiografia').value = data.user.biografia || '';
-                    document.getElementById('userRol').value = data.user.rol || 'user';
+            if (!data.success) {
+                throw new Error(data.error || 'Error al cargar los datos del usuario');
+            }
 
-                    // Mostrar el modal
-                    const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                    editModal.show();
-                });
+            // Rellenar los campos del formulario
+            document.getElementById('userId').value = data.user.id;
+            document.getElementById('userNom').value = data.user.nom || '';
+            document.getElementById('userCognoms').value = data.user.cognoms || '';
+            document.getElementById('userNomUsuari').value = data.user.nom_usuari || '';
+            document.getElementById('userEmail').value = data.user.email || '';
+            document.getElementById('userBiografia').value = data.user.biografia || '';
+            document.getElementById('userRol').value = data.user.rol || 'user';
+
+            // Mostrar el modal
+            const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            editModal.show();
 
         } catch (error) {
             console.error('Error completo:', error);
