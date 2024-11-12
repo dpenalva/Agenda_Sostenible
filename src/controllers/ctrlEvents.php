@@ -81,7 +81,8 @@ function ctrlCreateEvent($request, $response, $container) {
             'longitud' => $data['longitud'] ?? null,
             'latitud' => $data['latitud'] ?? null,
             'visibilitat_esdeveniment' => $data['visibilitat_esdeveniment'] ?? 0,
-            'tipus_esdeveniment_id' => $data['tipus_esdeveniment_id'] ?? 1
+            'tipus_esdeveniment_id' => $data['tipus_esdeveniment_id'] ?? 1,
+            'id_usuari' => $_SESSION['user_id']
         ]);
 
         $response->setJson();

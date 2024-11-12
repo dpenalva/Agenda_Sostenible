@@ -197,4 +197,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    const deleteButtons = document.querySelectorAll('.delete-event');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async function() {
+            const eventId = this.getAttribute('data-id');
+
+            if (confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+                try {
+                    const response = await fetch(`?r=deleteEvent&id=${eventId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Evento eliminado con éxito');
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'Error al eliminar el evento');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al procesar la solicitud');
+                }
+            }
+        });
+    });
 });

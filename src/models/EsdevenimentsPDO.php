@@ -121,7 +121,8 @@ class EsdevenimentsPDO {
                 longitud, 
                 latitud, 
                 visibilitat_esdeveniment,
-                tipus_esdeveniment_id
+                tipus_esdeveniment_id,
+                id_usuari
             ) VALUES (
                 :titol, 
                 :descripcio, 
@@ -130,7 +131,8 @@ class EsdevenimentsPDO {
                 :longitud, 
                 :latitud, 
                 :visibilitat_esdeveniment,
-                :tipus_esdeveniment_id
+                :tipus_esdeveniment_id,
+                :id_usuari
             )";
 
             $stmt = $this->sql->prepare($sql);
@@ -142,7 +144,8 @@ class EsdevenimentsPDO {
                 ':longitud' => $data['longitud'],
                 ':latitud' => $data['latitud'],
                 ':visibilitat_esdeveniment' => $data['visibilitat_esdeveniment'],
-                ':tipus_esdeveniment_id' => $data['tipus_esdeveniment_id']
+                ':tipus_esdeveniment_id' => $data['tipus_esdeveniment_id'],
+                ':id_usuari' => $data['id_usuari']
             ]);
 
             return $this->sql->lastInsertId();
