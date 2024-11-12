@@ -41,30 +41,38 @@ function ctrlAdmin($request, $response, $container) {
 
 function ctrlAdminGetUser($request, $response, $container) {
     try {
-        $id = $request->get('GET', 'id');
-        if (empty($id)) {
+        // Añadir logs para depuración
+        error_log("Iniciando ctrlAdminGetUser");
+        
+        $userId = $request->get('GET', 'id');
+        error_log("UserId recibido: " . ($userId ?? 'null'));
+        
+        if (!$userId) {
             throw new \Exception("ID de usuario no proporcionado");
         }
 
-        $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
-        $user = $usuarisModel->getUserById($id);
+        // Obtener los datos del usuario
+        $usuarisModel = $container->usuaris();
+        $user = $usuarisModel->get($userId);
         
-        // Debug log
-        error_log("Usuario encontrado: " . print_r($user, true));
+        error_log("Datos de usuario obtenidos: " . json_encode($user));
         
         if (!$user) {
             throw new \Exception("Usuario no encontrado");
         }
 
-        // Asegurarse que la respuesta es JSON y tiene la estructura correcta
+        // Configurar la respuesta JSON
         $response->setJson();
-        $response->set('user', $user);
+        $response->set("success", true);
+        $response->set("user", $user);
+        
         return $response;
 
     } catch (\Exception $e) {
-        error_log("Error en getUser: " . $e->getMessage());
+        error_log("Error en ctrlAdminGetUser: " . $e->getMessage());
         $response->setJson();
-        $response->set('error', $e->getMessage());
+        $response->set("success", false);
+        $response->set("error", $e->getMessage());
         return $response;
     }
 }
@@ -87,6 +95,36 @@ function ctrlAdminDeleteUser($request, $response, $container) {
         $response->setJson(['success' => $result]);
     } catch (\Exception $e) {
         $response->setJson(['error' => $e->getMessage()], 500);
+    }
+    return $response;
+}
+
+function ctrlAdminAddUser($request, $response, $container) {
+    try {
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        // Validaciones básicas
+        if (empty($data['nom']) || empty($data['email']) || empty($data['password'])) {
+            throw new \Exception("Todos los campos son obligatorios");
+        }
+
+        // Hash de la contraseña
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        
+        // Intentar crear el usuario (la verificación del email se hará en el modelo)
+        $usuaris = $container->usuaris();
+        $result = $usuaris->createUser($data);
+        
+        $response->setJson([
+            'success' => true,
+            'userId' => $result
+        ]);
+        
+    } catch (\Exception $e) {
+        $response->setJson([
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
     }
     return $response;
 } 

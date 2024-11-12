@@ -193,68 +193,86 @@
             </div>
 
             <!-- Usuarios Recientes -->
-            <div class="data-table mb-4">
-                <h5 class="text-white mb-3">Usuarios Recientes</h5>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($stats['recent_users'] as $user): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($user['nom'] . ' ' . $user['cognoms']); ?></td>
-                                <td><?php echo htmlspecialchars($user['email']); ?></td>
-                                <td>
-                                <button type="button" class="btn btn-primary edit-user" data-id="<?php echo htmlspecialchars($user['id']); ?>">
-    <i class="fas fa-edit"></i> Editar
-</button>
-                                    <button class="btn btn-action delete-user" data-id="<?php echo htmlspecialchars($user['id']); ?>">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+            <div class="card bg-dark text-white">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Usuarios Recientes</h5>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-plus"></i> Añadir Usuario
+                    </button>
                 </div>
-            </div>
-
-            <!-- Eventos Recientes -->
-            <div class="data-table">
-                <h5 class="text-white mb-3">Eventos Recientes</h5>
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Título</th>
-                                <th>Fecha</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($stats['recent_events'])): ?>
+                <div class="card-body">
+                    <div class="table-scroll-container">
+                        <table class="table table-dark table-hover table-fixed-header">
+                            <thead>
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">No hay eventos recientes</td>
+                                    <th class="text-info">Nombre</th>
+                                    <th class="text-info">Email</th>
+                                    <th class="text-info">Acciones</th>
                                 </tr>
-                            <?php else: ?>
-                                <?php foreach ($stats['recent_events'] as $event): ?>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($stats['recent_users'] as $user): ?>
                                 <tr>
-                                    <td><?php echo htmlspecialchars($event['titol']); ?></td>
-                                    <td><?php echo htmlspecialchars($event['data']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($user['nom']); ?></td>
+                                    <td class="text-white"><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td>
-                                        <button class="btn btn-action"><i class="fas fa-edit"></i></button>
-                                        <button class="btn btn-action"><i class="fas fa-trash"></i></button>
+                                        <button class="btn btn-info btn-sm" onclick="loadUserData(<?php echo $user['id']; ?>)">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteUser(<?php echo $user['id']; ?>)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Eventos Recientes -->
+            <div class="card bg-dark text-white mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Eventos Recientes</h5>
+                    <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                        <i class="fas fa-plus"></i> Añadir Evento
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-scroll-container">
+                        <table class="table table-dark table-hover table-fixed-header">
+                            <thead>
+                                <tr>
+                                    <th class="text-info">Título</th>
+                                    <th class="text-info">Fecha</th>
+                                    <th class="text-info">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($stats['recent_events'])): ?>
+                                    <tr>
+                                        <td colspan="3" class="text-center text-muted">No hay eventos recientes</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($stats['recent_events'] as $event): ?>
+                                    <tr>
+                                        <td class="text-white"><?php echo htmlspecialchars($event['titol']); ?></td>
+                                        <td class="text-white"><?php echo htmlspecialchars($event['data']); ?></td>
+                                        <td>
+                                            <button class="btn btn-info btn-sm" onclick="loadEventData(<?php echo $event['id']; ?>)">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteEvent(<?php echo $event['id']; ?>)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -291,6 +309,13 @@
                             <label for="userBiografia" class="form-label">Biografía</label>
                             <textarea class="form-control bg-dark text-white" id="userBiografia" rows="3"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="userRol" class="form-label">Rol</label>
+                            <select class="form-select bg-dark text-white" id="userRol">
+                                <option value="user">Usuario</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -301,140 +326,90 @@
         </div>
     </div>
 
+    <!-- Modal para añadir usuario -->
+    <div class="modal fade" id="addUserModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Añadir Nuevo Usuario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm" onsubmit="return false;">
+                        <div class="mb-3">
+                            <label for="newUserName" class="form-label">Nombre</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="newUserName" name="nom" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserLastName" class="form-label">Apellidos</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="newUserLastName" name="cognoms" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control bg-dark text-white border-secondary" id="newUserEmail" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserUsername" class="form-label">Nombre de Usuario</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="newUserUsername" name="nom_usuari" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control bg-dark text-white border-secondary" id="newUserPassword" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newUserRole" class="form-label">Rol</label>
+                            <select class="form-control bg-dark text-white border-secondary" id="newUserRole" name="rol">
+                                <option value="user">Usuario</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" id="saveNewUser">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para crear/editar evento -->
+    <div class="modal fade" id="createEventModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Crear Nuevo Evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventForm">
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Título</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="eventTitle" name="titol" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDate" class="form-label">Fecha</label>
+                            <input type="date" class="form-control bg-dark text-white border-secondary" id="eventDate" name="data" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventTime" class="form-label">Hora</label>
+                            <input type="time" class="form-control bg-dark text-white border-secondary" id="eventTime" name="hora" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventLocation" class="form-label">Ubicación</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" id="eventLocation" name="ubic" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" id="saveEvent">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-        
-        document.querySelectorAll('.edit-user').forEach(button => {
-            button.addEventListener('click', async function() {
-                const userId = this.getAttribute('data-id');
-                console.log('ID del usuario a editar:', userId);
-                
-                if (!userId) {
-                    alert('Error: No se encontró el ID del usuario');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(`/?r=admin/getUser&id=${userId}`);
-                    const data = await response.json();
-                    console.log('Respuesta del servidor:', data);
-                    
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-                    
-                    // Rellenar el formulario con los datos del usuario
-                    document.getElementById('userId').value = userId;
-                    document.getElementById('userNom').value = data.user.nom;
-                    document.getElementById('userCognoms').value = data.user.cognoms;
-                    document.getElementById('userNomUsuari').value = data.user.nom_usuari;
-                    document.getElementById('userEmail').value = data.user.email;
-                    document.getElementById('userBiografia').value = data.user.biografia || '';
-                    
-                    editModal.show();
-                } catch (error) {
-                    console.error('Error completo:', error);
-                    alert('Error al cargar los datos del usuario: ' + error.message);
-                }
-            });
-        });
-
-        // Event listener para guardar cambios
-        document.getElementById('saveUserChanges').addEventListener('click', async function() {
-            const userId = document.getElementById('userId').value;
-            const userData = {
-                nom: document.getElementById('userNom').value,
-                cognoms: document.getElementById('userCognoms').value,
-                nom_usuari: document.getElementById('userNomUsuari').value,
-                email: document.getElementById('userEmail').value,
-                biografia: document.getElementById('userBiografia').value
-            };
-
-            try {
-                const response = await fetch('/?r=admin/updateUser', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({id: userId, ...userData})
-                });
-
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    throw new Error('Error al actualizar el usuario');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al actualizar el usuario');
-            }
-        });
-
-        // Event listeners para botones de eliminar
-        document.querySelectorAll('.delete-user').forEach(button => {
-            button.addEventListener('click', async function() {
-                if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-                    const userId = this.dataset.id;
-                    try {
-                        const response = await fetch('/?r=admin/deleteUser', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({id: userId})
-                        });
-
-                        if (response.ok) {
-                            location.reload();
-                        } else {
-                            alert('Error al eliminar el usuario');
-                        }
-                    } catch (error) {
-                        alert('Error al eliminar el usuario');
-                    }
-                }
-            });
-        });
-
-        // Función para editar usuario
-        async function editUser(userId) {
-            try {
-                const response = await fetch(`?r=admin/getUser&id=${userId}`);
-                
-                // Debug de la respuesta
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers.get('Content-Type'));
-                
-                const data = await response.json();
-                console.log('Response data:', data);
-
-                if (!data || data.error) {
-                    throw new Error(data.error || 'Error desconocido al cargar los datos');
-                }
-
-                if (!data.user) {
-                    throw new Error('La respuesta no contiene datos de usuario');
-                }
-
-                // Rellenar el formulario con los datos del usuario
-                document.getElementById('userId').value = userId;
-                document.getElementById('userNom').value = data.user.nom || '';
-                document.getElementById('userCognoms').value = data.user.cognoms || '';
-                document.getElementById('userNomUsuari').value = data.user.nom_usuari || '';
-                document.getElementById('userEmail').value = data.user.email || '';
-                document.getElementById('userBiografia').value = data.user.biografia || '';
-                
-                // Mostrar el modal
-                const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                editModal.show();
-            } catch (error) {
-                console.error('Error completo:', error);
-                alert('Error al cargar los datos del usuario: ' + error.message);
-            }
-        }
-    });
-    </script>
+    <script src="/js/admin.js"></script>
 </body>
 </html> 
