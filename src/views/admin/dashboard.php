@@ -258,8 +258,8 @@
                                 <?php else: ?>
                                     <?php foreach ($stats['recent_events'] as $event): ?>
                                     <tr>
-                                        <td class="text-white"><?php echo htmlspecialchars($event['titol']); ?></td>
-                                        <td class="text-white"><?php echo htmlspecialchars($event['data']); ?></td>
+                                        <td class="text-white"><?php echo htmlspecialchars($event['titol'] ?? ''); ?></td>
+                                        <td class="text-white"><?php echo htmlspecialchars($event['data_esdeveniment'] ?? ''); ?></td>
                                         <td>
                                             <button class="btn btn-info btn-sm" onclick="loadEventData(<?php echo $event['id']; ?>)">
                                                 <i class="fas fa-edit"></i> Editar
