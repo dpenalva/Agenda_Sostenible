@@ -9,5 +9,7 @@ $routes = [
     'admin' => ['ctrlAdmin', ['adminMiddleware']],
     'admin/users' => ['ctrlAdmin', ['adminMiddleware']],
     'admin/events' => ['ctrlAdmin', ['adminMiddleware']],
+    'events' => 'ctrlEvents',
+    'toggleEventLike' => 'ctrlToggleEventLike',
     // otras rutas...
 ]; 

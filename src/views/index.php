@@ -41,26 +41,28 @@
             <h2 class="text-white mb-3">Home</h2>
 
             <!-- Área de creación de evento -->
-            <div class="post-creation-area">
-                <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
-                    <div class="create-event-wrapper">
-                        <div class="create-event-left">
-                            <img src="/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle" style="width: 48px; height: 48px;">
-                            <div class="create-event-placeholder">¿Tienes un evento para compartir?</div>
-                        </div>
-                        <div class="create-event-button">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span>Crear evento</span>
+            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                <div class="post-creation-area">
+                    <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                        <div class="create-event-wrapper">
+                            <div class="create-event-left">
+                                <img src="/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle" style="width: 48px; height: 48px;">
+                                <div class="create-event-placeholder">¿Tienes un evento para compartir?</div>
+                            </div>
+                            <div class="create-event-button">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Crear evento</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <!-- Feed de eventos -->
             <div class="events-feed mt-4">
                 <?php if (isset($eventos) && !empty($eventos)): ?>
                     <?php foreach ($eventos as $evento): ?>
-                        <div class="event-card mb-4">
+                        <div class="event-card mb-4" data-event-id="<?php echo $evento['id']; ?>">
                             <div class="card bg-dark text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">
@@ -101,6 +103,26 @@
                                     <div class="visibility-badge">
                                         <i class="fas fa-eye"></i>
                                         <?php echo isset($evento['visibilitat_esdeveniment']) && $evento['visibilitat_esdeveniment'] ? 'Público' : 'Privado'; ?>
+                                    </div>
+                                    <div class="event-interactions mt-3">
+                                        <button 
+                                            class="like-button <?php echo isset($evento['is_liked']) && $evento['is_liked'] ? 'liked' : ''; ?>"
+                                            data-event-id="<?php echo $evento['id']; ?>"
+                                            onclick="toggleLike(<?php echo $evento['id']; ?>)"
+                                        >
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        
+                                        <div class="rating-container d-inline-block ms-3">
+                                            <?php for($i = 1; $i <= 5; $i++): ?>
+                                                <i class="fas fa-star rating-star" 
+                                                   data-rating="<?php echo $i; ?>"
+                                                   onclick="rateEvent(<?php echo $evento['id']; ?>, <?php echo $i; ?>)"
+                                                   style="color: <?php echo (isset($evento['user_rating']) && $evento['user_rating'] >= $i) ? '#ffc107' : '#6c757d'; ?>">
+                                                </i>
+                                            <?php endfor; ?>
+                                            <span class="average-rating ms-2">(<?php echo number_format($evento['average_rating'] ?? 0, 1); ?>)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
