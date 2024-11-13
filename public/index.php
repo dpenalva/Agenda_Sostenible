@@ -1,5 +1,5 @@
 <?php
-// Asegurarse de que no hay salida antes de los headers
+// Limpiar cualquier output anterior
 ob_start();
 
 session_start();
@@ -110,6 +110,18 @@ ini_set('display_errors', 1);
         $response = adminMiddleware($request, $response, $container, function($request, $response, $container) {
             return ctrlAdminAddUser($request, $response, $container);
         });
+        break;
+    case "admin/getEvent":
+        $response = ctrlAdminGetEvent($request, $response, $container);
+        break;
+    case "admin/updateEvent":
+        $response = ctrlAdminUpdateEvent($request, $response, $container);
+        break;
+    case "admin/deleteEvent":
+        $response = ctrlAdminDeleteEvent($request, $response, $container);
+        break;
+    case "admin/createEvent":
+        $response = ctrlAdminCreateEvent($request, $response, $container);
         break;
     default:
         $response->set("error", "Ruta no encontrada");

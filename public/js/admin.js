@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     async function deleteUser(userId) {
-        if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+        if (!confirm('Estás seguro de que deseas eliminar este usuario?')) {
             return;
         }
 
@@ -161,6 +161,163 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (error) {
             console.error('Error:', error);
             alert(error.message);
+        }
+    });
+
+    async function loadEventData(eventId) {
+        try {
+            console.log('Cargando evento:', eventId);
+            
+            const url = `?r=admin/getEvent&id=${parseInt(eventId, 10)}`;
+            console.log('URL de petición:', url);
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || 'Error al cargar los datos del evento');
+            }
+
+            // Rellenar el formulario con todos los campos
+            document.getElementById('editEventId').value = data.event.id;
+            document.getElementById('editEventTitle').value = data.event.titol || '';
+            document.getElementById('editEventDescription').value = data.event.descripcio || '';
+            document.getElementById('editEventDate').value = data.event.data_esdeveniment || '';
+            document.getElementById('editEventTime').value = data.event.hora_esdeveniment || '';
+            document.getElementById('editEventLatitude').value = data.event.latitud || '';
+            document.getElementById('editEventLongitude').value = data.event.longitud || '';
+            document.getElementById('editEventVisibility').value = data.event.visibilitat_esdeveniment || '0';
+
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('editEventModal'));
+            modal.show();
+
+        } catch (error) {
+            console.error('Error completo:', error);
+            alert('Error al cargar los datos del evento: ' + error.message);
+        }
+    }
+
+    // Función para guardar cambios del evento
+    document.getElementById('saveEventChanges')?.addEventListener('click', async function() {
+        try {
+            const form = document.getElementById('editEventForm');
+            const formData = new FormData(form);
+            const eventData = Object.fromEntries(formData.entries());
+
+            console.log('Enviando datos:', eventData); // Para depuración
+
+            const response = await fetch('?r=admin/updateEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(eventData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Evento actualizado correctamente');
+                window.location.reload();
+            } else {
+                throw new Error(data.error || 'Error al actualizar el evento');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al guardar los cambios: ' + error.message);
+        }
+    });
+
+    // Función para eliminar evento
+    async function deleteEvent(eventId) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+            return;
+        }
+
+        try {
+            console.log('Eliminando evento:', eventId); // Para depuración
+
+            const response = await fetch('?r=admin/deleteEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ id: eventId })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Evento eliminado correctamente');
+                window.location.reload();
+            } else {
+                throw new Error(data.error || 'Error al eliminar el evento');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el evento: ' + error.message);
+        }
+    }
+
+    // Hacer las funciones disponibles globalmente
+    window.loadEventData = loadEventData;
+    window.deleteEvent = deleteEvent;
+
+    // Función para crear nuevo evento
+    document.getElementById('saveNewEvent')?.addEventListener('click', async function() {
+        try {
+            const form = document.getElementById('createEventForm');
+            const formData = new FormData(form);
+            const eventData = Object.fromEntries(formData.entries());
+
+            console.log('Creando nuevo evento:', eventData); // Para depuración
+
+            const response = await fetch('?r=admin/createEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(eventData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Evento creado correctamente');
+                window.location.reload();
+            } else {
+                throw new Error(data.error || 'Error al crear el evento');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al crear el evento: ' + error.message);
         }
     });
 });
