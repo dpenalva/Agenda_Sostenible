@@ -377,7 +377,6 @@ body {
 /* Área de creación de post/evento */
 .post-creation-area {
     background-color: #15181c;
-    border: 1px solid #2f3336;
     border-radius: 16px;
     margin: 20px auto;
     max-width: 600px;
@@ -410,16 +409,21 @@ body {
 }
 
 .create-event-button {
-    background-color: transparent;
-    border: 1px solid #53d5cd;
-    color: #53d5cd;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    transition: all 0.2s ease;
-    display: flex;
+    background-color: #53d5cd;
+    border: none;
+    color: #0b0c10;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 .create-post-button:hover {
@@ -428,6 +432,15 @@ body {
 
 .create-post-button:hover .create-event-button {
     background-color: #53d5cd1a;
+}
+
+.create-event-button:hover {
+    background-color: #3ec4bb;
+    transform: translateY(-2px);
+}
+.create-event-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilos para el modal de eventos */
@@ -1534,4 +1547,39 @@ body {
 
 .event-action-btn:hover::before {
     opacity: 1;
+}
+
+.search-container {
+    margin-left: 15px;
+    position: relative;
+    width: 100%;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px 20px 10px 45px;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #1e2125;
+    color: #bfc0c2;
+}
+
+.search-bar:focus {
+    border-color: #53d5cd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    outline: none;
+}
+
+.search-container::before {
+    content: '\f002';
+    font-family: 'FontAwesome';
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bfc0c2;
+    font-size: 1.2em;
 }

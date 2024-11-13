@@ -264,4 +264,26 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error al eliminar el evento');
         }
     }
+
+    const searchInput = document.getElementById('searchEvents');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const eventCards = document.querySelectorAll('.event-card');
+            
+            eventCards.forEach(card => {
+                const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+                const description = card.querySelector('.card-text')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    } else {
+        console.error('Search input not found');
+    }
 });

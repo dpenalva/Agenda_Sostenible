@@ -43,16 +43,15 @@
             <!-- Área de creación de evento -->
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                 <div class="post-creation-area">
-                    <div class="create-post-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
-                        <div class="create-event-wrapper">
-                            <div class="create-event-left">
-                                <img src="/uploads/images/default-avatar.png" alt="Avatar" class="rounded-circle" style="width: 48px; height: 48px;">
-                                <div class="create-event-placeholder">¿Tienes un evento para compartir?</div>
-                            </div>
-                            <div class="create-event-button">
-                                <i class="fas fa-calendar-plus"></i>
-                                <span>Crear evento</span>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <!-- Botón para crear evento -->
+                        <button type="button" class="create-event-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
+                            <i class="fas fa-plus me-2"></i>Crear Evento
+                        </button>
+                        
+                        <!-- Buscador de eventos -->
+                        <div class="search-container">
+                            <input type="text" id="searchEvents" class="search-bar" placeholder="Buscar eventos...">
                         </div>
                     </div>
                 </div>
