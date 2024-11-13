@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/web.css">
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.css' rel='stylesheet' />
+    <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css' rel='stylesheet' />
 </head>
 
 <body>
@@ -149,7 +151,23 @@
         <!-- Right Sidebar with Calendar -->
         <aside class="sidebar-right p-4">
             <h4 class="text-white">Calendar</h4>
-            <div id="calendar" class="text-white"></div>
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button id="prevMonth">&lt;</button>
+                    <h2 id="monthDisplay"></h2>
+                    <button id="nextMonth">&gt;</button>
+                </div>
+                <div class="calendar-weekdays">
+                    <div>Do</div>
+                    <div>Lu</div>
+                    <div>Ma</div>
+                    <div>Mi</div>
+                    <div>Ju</div>
+                    <div>Vi</div>
+                    <div>Sa</div>
+                </div>
+                <div id="daysContainer"></div>
+            </div>
         </aside>
     </div>
     <script src="/js/menu.js"></script>
@@ -159,6 +177,8 @@
     <script src="/js/calendar.js"></script>
     <script src="/js/events.js"></script>
     <script src="/js/eventActions.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.8/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.js'></script>
 
     <!-- Modal para crear evento -->
     <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">

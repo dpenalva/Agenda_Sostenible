@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/web.css">
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 </head>
 
-<body>
+<body class="bg-dark">
     <!-- Agregar botón de menú y overlay -->
     <button class="menu-toggle">
         <i class="fas fa-bars"></i>
@@ -110,6 +111,8 @@
                     </div>
                 <?php endif; ?>
             </div>
+
+            <div id="calendar" class="mt-4 bg-dark text-white"></div>
         </main>
 
         <!-- Right Sidebar (común en todas las páginas) -->
@@ -122,6 +125,7 @@
     <script src="/js/menu.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/events.js"></script>
 </body>
 </html>

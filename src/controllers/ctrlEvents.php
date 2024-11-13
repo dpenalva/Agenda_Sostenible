@@ -42,10 +42,14 @@ function ctrlToggleEventLike($request, $response, $container) {
         $esdevenimentsModel = $container->esdeveniments();
         $result = $esdevenimentsModel->toggleLike($_SESSION['user_id'], $eventId);
         
+        // Obtener los datos del evento
+        $event = $esdevenimentsModel->get($eventId);
+        
         $response->setJson();
         $response->set('success', true);
         $response->set('isLiked', $result['isLiked']);
         $response->set('likesCount', $result['likesCount']);
+        $response->set('event', $event); // Añadir datos del evento
         
         return $response;
     } catch (\Exception $e) {
@@ -140,4 +144,31 @@ function ctrlDeleteEvent($request, $response, $container) {
         $response->set('message', $e->getMessage());
         return $response;
     }
+}
+
+function ctrlEventsGetEvent($request, $response, $container) {
+    try {
+        if (!isset($_GET['id'])) {
+            throw new \Exception("ID de evento no proporcionado");
+        }
+
+        $eventId = $_GET['id'];
+        $esdevenimentsModel = $container->esdeveniments();
+        $event = $esdevenimentsModel->get($eventId);
+
+        if (!$event) {
+            throw new \Exception("Evento no encontrado");
+        }
+
+        $response->setJson();
+        $response->set('success', true);
+        $response->set('event', $event);
+        
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('error', $e->getMessage());
+    }
+    
+    return $response;
 } 

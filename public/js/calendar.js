@@ -7,7 +7,6 @@ class Calendar {
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         this.savedEvents = [];
         
-        // Hacer la instancia disponible globalmente
         window.calendarInstance = this;
         
         this.init();
@@ -26,79 +25,45 @@ class Calendar {
 
     hasEventsOnDate(day) {
         const currentDate = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        return this.savedEvents.some(event => {
-            const eventDate = new Date(event.event_date);
-            const eventDateString = eventDate.toISOString().split('T')[0];
-            
-            return eventDateString === currentDate;
-        });
+        return this.savedEvents.some(event => event.event_date === currentDate);
     }
 
     renderCalendar() {
-        const calendar = document.getElementById('calendar');
-        if (!calendar) return;
-
-        let calendarHTML = `
-            <div class="calendar-header">
-                <button class="btn-calendar" id="prevMonth">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <div class="calendar-title">
-                    <div class="month">${this.monthNames[this.currentMonth]}</div>
-                    <div class="year">${this.currentYear}</div>
-                </div>
-                <button class="btn-calendar" id="nextMonth">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-            <div class="calendar-weekdays">
-                <div>Do</div>
-                <div>Lu</div>
-                <div>Ma</div>
-                <div>Mi</div>
-                <div>Ju</div>
-                <div>Vi</div>
-                <div>Sa</div>
-            </div>
-            <div class="calendar-days">
+        const monthDisplay = document.getElementById('monthDisplay');
+        monthDisplay.innerHTML = `
+            ${this.monthNames[this.currentMonth]}
+            <span class="year">${this.currentYear}</span>
         `;
 
+        const daysContainer = document.getElementById('daysContainer');
+        if (!daysContainer) return;
+
+        daysContainer.innerHTML = '';
+
         const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+        const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+        const totalDays = lastDay.getDate();
         const startingDay = firstDay.getDay();
-        const totalDays = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
 
-        // Días vacíos
+        // Días vacíos del mes anterior
         for (let i = 0; i < startingDay; i++) {
-            calendarHTML += '<div class="calendar-day empty"></div>';
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'day empty';
+            daysContainer.appendChild(emptyDay);
         }
 
-        // Días del mes
+        // Días del mes actual
         for (let day = 1; day <= totalDays; day++) {
-            const hasEvents = this.hasEventsOnDate(day);
-            const today = new Date();
-            const isToday = day === today.getDate() && 
-                           this.currentMonth === today.getMonth() && 
-                           this.currentYear === today.getFullYear();
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'day';
+            dayDiv.textContent = day;
 
-            // Obtener los eventos para este día
-            const eventsForDay = this.getEventsForDate(day);
-            const tooltipContent = eventsForDay.map(event => 
-                `${event.title} - ${event.event_time}`
-            ).join('\n');
+            if (this.hasEventsOnDate(day)) {
+                dayDiv.classList.add('has-favorite-event');
+            }
 
-            calendarHTML += `
-                <div class="calendar-day${isToday ? ' today' : ''}${hasEvents ? ' has-events' : ''}"
-                     data-date="${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}"
-                     ${hasEvents ? `data-tooltip="${tooltipContent}"` : ''}>
-                    <span>${day}</span>
-                    ${hasEvents ? '<div class="event-indicator"></div>' : ''}
-                </div>
-            `;
+            daysContainer.appendChild(dayDiv);
         }
-
-        calendarHTML += '</div>';
-        calendar.innerHTML = calendarHTML;
     }
 
     addNavigationListeners() {
@@ -109,7 +74,6 @@ class Calendar {
                 this.currentYear--;
             }
             this.renderCalendar();
-            this.addNavigationListeners();
         });
 
         document.getElementById('nextMonth').addEventListener('click', () => {
@@ -119,21 +83,10 @@ class Calendar {
                 this.currentYear++;
             }
             this.renderCalendar();
-            this.addNavigationListeners();
-        });
-    }
-
-    getEventsForDate(day) {
-        const currentDate = `${this.currentYear}-${String(this.currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        return this.savedEvents.filter(event => {
-            const eventDate = new Date(event.event_date);
-            const eventDateString = eventDate.toISOString().split('T')[0];
-            return eventDateString === currentDate;
         });
     }
 }
 
-// Asegurarse de que el calendario se inicializa
 document.addEventListener('DOMContentLoaded', () => {
     new Calendar();
 });

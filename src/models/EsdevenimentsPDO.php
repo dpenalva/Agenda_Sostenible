@@ -85,30 +85,22 @@ class EsdevenimentsPDO {
     public function get($id) {
         try {
             $stmt = $this->sql->prepare("
-                SELECT 
-                    id,
-                    titol,
-                    descripcio,
-                    data_esdeveniment,
-                    hora_esdeveniment,
-                    longitud,
-                    latitud,
-                    visibilitat_esdeveniment
-                FROM esdeveniments 
-                WHERE id = :id
+                SELECT e.*, 
+                       (SELECT COUNT(*) FROM favorit WHERE esdeveniment_id = e.id) as likes_count,
+                       EXISTS(SELECT 1 FROM favorit WHERE esdeveniment_id = e.id AND usuari_id = :user_id) as is_liked
+                FROM esdeveniments e
+                WHERE e.id = :id
             ");
             
-            $stmt->execute([':id' => $id]);
-            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $stmt->execute([
+                ':id' => $id,
+                ':user_id' => isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null
+            ]);
             
-            if (!$result) {
-                throw new \Exception("No se encontró el evento con ID: $id");
-            }
-            
-            return $result;
-            
-        } catch (\PDOException $e) {
-            throw new \Exception("Error al obtener el evento: " . $e->getMessage());
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
+        } catch (\Exception $e) {
+            error_log("Error en get: " . $e->getMessage());
+            throw new \Exception("Error al obtener el evento");
         }
     }
 
