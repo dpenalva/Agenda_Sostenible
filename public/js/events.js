@@ -197,4 +197,71 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    // Función para editar evento
+    async function editEvent(eventId) {
+        try {
+            // Obtener datos del evento
+            const response = await fetch(`?r=getEvent&id=${eventId}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                // Rellenar el modal con los datos del evento
+                document.getElementById('titol').value = data.event.titol;
+                document.getElementById('descripcio').value = data.event.descripcio;
+                document.getElementById('data_esdeveniment').value = data.event.data_esdeveniment;
+                document.getElementById('hora_esdeveniment').value = data.event.hora_esdeveniment;
+                document.getElementById('longitud').value = data.event.longitud;
+                document.getElementById('latitud').value = data.event.latitud;
+                document.getElementById('visibilitat_esdeveniment').checked = data.event.visibilitat_esdeveniment;
+                
+                // Modificar el modal para modo edición
+                document.getElementById('createEventModalLabel').textContent = 'Editar Evento';
+                document.getElementById('saveEventButton').textContent = 'Guardar Cambios';
+                document.getElementById('createEventForm').setAttribute('data-event-id', eventId);
+                
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('createEventModal'));
+                modal.show();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al cargar los datos del evento');
+        }
+    }
+
+    // Función para eliminar evento
+    async function deleteEvent(eventId) {
+        if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch('?r=deleteEvent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ eventId })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // Eliminar el evento del DOM con animación
+                const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+                if (eventCard) {
+                    eventCard.style.opacity = '0';
+                    setTimeout(() => {
+                        eventCard.remove();
+                    }, 300);
+                }
+            } else {
+                throw new Error(data.message || 'Error al eliminar el evento');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el evento');
+        }
+    }
 });

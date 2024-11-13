@@ -882,9 +882,86 @@ body {
 .event-interactions {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.event-action-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e2125;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.edit-btn {
+    color: #53d5cd;
+}
+
+.edit-btn:hover {
+    background-color: #53d5cd;
+    color: #0b0c10;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(83, 213, 205, 0.3);
+}
+
+.delete-btn {
+    color: #ff4d6d;
+}
+
+.delete-btn:hover {
+    background-color: #ff4d6d;
+    color: #0b0c10;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 77, 109, 0.3);
+}
+
+.event-action-btn i {
+    font-size: 1em;
+}
+
+.action-buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+}
+
+/* Efecto al hacer click */
+.event-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de brillo alrededor al hover */
+.edit-btn::before,
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.edit-btn::before {
+    background: radial-gradient(circle at center, rgba(83, 213, 205, 0.2) 0%, transparent 70%);
+}
+
+.delete-btn::before {
+    background: radial-gradient(circle at center, rgba(255, 77, 109, 0.2) 0%, transparent 70%);
+}
+
+.event-action-btn:hover::before {
+    opacity: 1;
 }
 
 /* Responsive adjustments */
@@ -1372,4 +1449,89 @@ body {
 /* Asegurar que las filas de la tabla tengan una altura mínima */
 .table-fixed-header tbody tr {
     height: 48px;
+}
+
+.event-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.event-action-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e2125;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.edit-btn {
+    color: #53d5cd;
+}
+
+.edit-btn:hover {
+    background-color: #53d5cd;
+    color: #0b0c10;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(83, 213, 205, 0.3);
+}
+
+.delete-btn {
+    color: #ff4d6d;
+}
+
+.delete-btn:hover {
+    background-color: #ff4d6d;
+    color: #0b0c10;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 77, 109, 0.3);
+}
+
+.event-action-btn i {
+    font-size: 1em;
+}
+
+.action-buttons {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+}
+
+/* Efecto al hacer click */
+.event-action-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto de brillo alrededor al hover */
+.edit-btn::before,
+.delete-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.edit-btn::before {
+    background: radial-gradient(circle at center, rgba(83, 213, 205, 0.2) 0%, transparent 70%);
+}
+
+.delete-btn::before {
+    background: radial-gradient(circle at center, rgba(255, 77, 109, 0.2) 0%, transparent 70%);
+}
+
+.event-action-btn:hover::before {
+    opacity: 1;
 }
