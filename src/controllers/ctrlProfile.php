@@ -1,6 +1,27 @@
 <?php
 
+function checkUploadDirectories() {
+    $directories = [
+        __DIR__ . '/../../public/uploads',
+        __DIR__ . '/../../public/uploads/images',
+        __DIR__ . '/../../public/uploads/profile_images'
+    ];
+    
+    foreach ($directories as $dir) {
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+            error_log("Creado directorio: $dir");
+        }
+        
+        if (!is_writable($dir)) {
+            error_log("ADVERTENCIA: El directorio $dir no tiene permisos de escritura");
+        }
+    }
+}
+
 function ctrlProfile($request, $response, $container) {
+    checkUploadDirectories();
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -12,17 +33,17 @@ function ctrlProfile($request, $response, $container) {
 
     try {
         $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
-        $user = $usuarisModel->get($_SESSION['user_id']);
+        $userData = $usuarisModel->getUserById($_SESSION['user_id']);
         
-        if (!$user) {
-            throw new \Exception("Usuario no encontrado");
-        }
-
-        $response->set("userData", $user);
+        error_log("Datos del usuario: " . print_r($userData, true));
+        error_log("URL de imagen de perfil: " . ($userData['imatge_perfil'] ?? 'no hay imagen'));
+        
+        $response->set("userData", $userData);
         $response->setTemplate("profile.php");
         return $response;
 
     } catch (\Exception $e) {
+        error_log("Error en perfil: " . $e->getMessage());
         $response->set("error", $e->getMessage());
         $response->setTemplate("error.php");
         return $response;
@@ -31,44 +52,44 @@ function ctrlProfile($request, $response, $container) {
 
 function ctrlUpdateProfileImage($request, $response, $container) {
     try {
-        if (!isset($_FILES['profileImage']) || $_FILES['profileImage']['error'] !== UPLOAD_ERR_OK) {
+        $file = $_FILES['profileImage'] ?? null;
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
             throw new \Exception("Error al subir el archivo");
         }
 
-        $file = $_FILES['profileImage'];
-        $userId = $_SESSION['user_id'];
-
-        // Validar el archivo
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        // Validaciones básicas
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!in_array($file['type'], $allowedTypes)) {
             throw new \Exception("Tipo de archivo no permitido");
         }
 
-        // Limitar tamaño (5MB)
-        if ($file['size'] > 5 * 1024 * 1024) {
-            throw new \Exception("La imagen es demasiado grande");
-        }
-
-        // Crear directorio si no existe
+        $userId = $_SESSION['user_id'];
         $uploadDir = __DIR__ . '/../../public/uploads/profile_images/';
+        
+        // Asegurarse de que el directorio existe
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
 
-        // Generar nombre único
+        // Generar nombre de archivo único
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = uniqid('profile_') . '.' . $extension;
+        $fileName = 'profile_' . $userId . '_' . uniqid() . '.' . $extension;
         $filePath = $uploadDir . $fileName;
-
-        // Mover archivo
+        
+        // Guardar archivo
         if (!move_uploaded_file($file['tmp_name'], $filePath)) {
-            throw new \Exception("Error al mover el archivo subido");
+            error_log("Error moviendo archivo a: $filePath");
+            throw new \Exception("Error al guardar la imagen");
         }
 
+        // URL relativa para la base de datos
+        $imageUrl = '/uploads/profile_images/' . $fileName;
+        
         // Actualizar en base de datos
         $usuarisModel = new \Models\UsuarisPDO($container->config['db']);
-        $imageUrl = '/uploads/profile_images/' . $fileName;
         $usuarisModel->updateProfileImage($userId, $imageUrl);
+        
+        error_log("Imagen actualizada correctamente: $imageUrl");
 
         $response->setJson();
         $response->set("success", true);
@@ -76,7 +97,7 @@ function ctrlUpdateProfileImage($request, $response, $container) {
         return $response;
 
     } catch (\Exception $e) {
-        error_log("Error en actualización de imagen: " . $e->getMessage());
+        error_log("Error actualizando imagen de perfil: " . $e->getMessage());
         $response->setJson();
         $response->set("success", false);
         $response->set("message", $e->getMessage());

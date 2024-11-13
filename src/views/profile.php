@@ -50,9 +50,16 @@
                     <div class="profile-header">
                         <!-- Foto de perfil -->
                         <div class="profile-image-container">
-                            <img src="<?php echo htmlspecialchars($userData['imatge_perfil'] ?? '/uploads/images/default-avatar.png'); ?>" 
+                            <?php
+                                $profileImage = $userData['imatge_perfil'] ?? '/uploads/images/default-avatar.png';
+                                error_log("Mostrando imagen: " . $profileImage);
+                            ?>
+                            <!-- Añadir comentario HTML para ver la URL en el código fuente -->
+                            <!-- Profile Image URL: <?php echo htmlspecialchars($profileImage); ?> -->
+                            <img src="<?php echo htmlspecialchars($profileImage); ?>" 
                                  alt="Foto de perfil" 
-                                 class="profile-image">
+                                 class="profile-image"
+                                 onerror="this.src='/uploads/images/default-avatar.png'; console.log('Error cargando imagen');">
                             <div class="edit-overlay">
                                 <button type="button" class="btn edit-photo-btn">
                                     <i class="fas fa-camera"></i>

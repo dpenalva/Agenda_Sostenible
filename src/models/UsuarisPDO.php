@@ -273,29 +273,23 @@ class UsuarisPDO extends DB {
         }
     }
 
-    public function getUserById($id) {
+    public function getUserById($userId) {
         try {
-            $query = "SELECT id, nom, cognoms, nom_usuari, email, biografia, rol 
-                     FROM usuaris 
-                     WHERE id = :id 
-                     LIMIT 1";
-
+            $query = "SELECT id, nom, cognoms, nom_usuari, email, imatge_perfil, biografia, banner, rol 
+                      FROM usuaris 
+                      WHERE id = :userId";
+            
             $stmt = $this->sql->prepare($query);
-            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-            $stmt->execute();
+            $stmt->execute([':userId' => $userId]);
             
-            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            if (!$result) {
-                throw new \Exception("Usuario no encontrado");
-            }
+            // Depuración
+            error_log("Datos obtenidos de la BD para usuario $userId: " . print_r($user, true));
             
-            // Limpiar los datos antes de devolverlos
-            return array_map(function($value) {
-                return is_string($value) ? trim(strip_tags($value)) : $value;
-            }, $result);
-
+            return $user;
         } catch (\PDOException $e) {
+            error_log("Error getting user: " . $e->getMessage());
             throw new \Exception("Error al obtener el usuario");
         }
     }
