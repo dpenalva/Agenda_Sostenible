@@ -193,16 +193,36 @@ body {
 }
 
 /* Calendar */
-#calendar {
-    background-color: #1a1a1a;
-    border-radius: 20px;
-    padding: 1.5rem;
-    max-width: 400px;
-    margin: 0 auto;
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-top: 20px;
 }
 
 .calendar-header {
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.calendar-header .month-name {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.calendar-header .nav-arrow {
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #ffeb3b;
+    transition: color 0.3s ease;
+}
+
+.calendar-header .nav-arrow:hover {
+    color: #fff;
 }
 
 .btn-calendar {
@@ -249,31 +269,53 @@ body {
 }
 
 .calendar-day {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background-color: #2e2e3e;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    font-size: 0.9em;
 }
 
-.calendar-day:hover:not(.empty) {
-    background-color: #333;
+.calendar-day:hover {
+    background-color: #3e3e5e;
+    transform: translateY(-3px);
 }
 
 .calendar-day.empty {
+    background-color: transparent;
     cursor: default;
 }
 
 .calendar-day.today {
-    background-color: #0d6efd;
-    color: white;
+    background-color: #4e4e7e;
+    font-weight: bold;
+    border: 2px solid #ffeb3b;
 }
 
-.calendar-day.today:hover {
-    background-color: #0b5ed7;
+.liked-event-day {
+    position: relative;
+    background-color: #ffeb3b;
+    color: #000;
+}
+
+.liked-event-day:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 10;
+    font-size: 0.8em;
+    margin-top: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Efecto hover suave para los días */
