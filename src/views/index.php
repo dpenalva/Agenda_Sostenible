@@ -125,11 +125,11 @@
                                         </div>
 
                                         <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                                            <div class="action-buttons">
-                                                <button class="event-action-btn edit-btn" onclick="editEvent(<?php echo $evento['id']; ?>)" title="Editar">
+                                            <div class="event-actions">
+                                                <button class="btn btn-sm btn-link text-primary" onclick="loadEventData(<?php echo $evento['id']; ?>)">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button class="event-action-btn delete-btn" onclick="deleteEvent(<?php echo $evento['id']; ?>)" title="Eliminar">
+                                                <button class="btn btn-sm btn-link text-danger" onclick="deleteEvent(<?php echo $evento['id']; ?>)">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
@@ -159,6 +159,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="/js/calendar.js"></script>
     <script src="/js/events.js"></script>
+    <script src="/js/eventActions.js"></script>
 
     <!-- Modal para crear evento -->
     <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
@@ -207,6 +208,65 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="saveEventButton">Crear Evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar evento -->
+    <div class="modal fade" id="editEventModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Editar Evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEventForm">
+                        <input type="hidden" id="editEventId" name="id">
+                        
+                        <div class="mb-3">
+                            <label for="editEventTitle" class="form-label">Título</label>
+                            <input type="text" class="form-control bg-dark text-white" id="editEventTitle" name="titol" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventDescription" class="form-label">Descripción</label>
+                            <textarea class="form-control bg-dark text-white" id="editEventDescription" name="descripcio"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventDate" class="form-label">Fecha</label>
+                            <input type="date" class="form-control bg-dark text-white" id="editEventDate" name="data_esdeveniment" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventTime" class="form-label">Hora</label>
+                            <input type="time" class="form-control bg-dark text-white" id="editEventTime" name="hora_esdeveniment" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventLatitude" class="form-label">Latitud</label>
+                            <input type="text" class="form-control bg-dark text-white" id="editEventLatitude" name="latitud">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventLongitude" class="form-label">Longitud</label>
+                            <input type="text" class="form-control bg-dark text-white" id="editEventLongitude" name="longitud">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editEventVisibility" class="form-label">Visibilidad</label>
+                            <select class="form-control bg-dark text-white" id="editEventVisibility" name="visibilitat_esdeveniment">
+                                <option value="0">Privado</option>
+                                <option value="1">Público</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveEventChanges()">Guardar cambios</button>
                 </div>
             </div>
         </div>
