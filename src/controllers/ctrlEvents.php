@@ -114,4 +114,30 @@ function ctrlGetEvents($request, $response, $container) {
         $response->set('message', $e->getMessage());
         return $response;
     }
+}
+
+function ctrlDeleteEvent($request, $response, $container) {
+    try {
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+            throw new \Exception("No tienes permisos para realizar esta acción");
+        }
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!isset($data['eventId'])) {
+            throw new \Exception("ID de evento no proporcionado");
+        }
+
+        $eventId = $data['eventId'];
+        $esdevenimentsModel = $container->esdeveniments();
+        $result = $esdevenimentsModel->deleteEvent($eventId);
+        
+        $response->setJson();
+        $response->set('success', true);
+        return $response;
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('message', $e->getMessage());
+        return $response;
+    }
 } 

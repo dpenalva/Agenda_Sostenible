@@ -63,7 +63,7 @@
                 <?php if (isset($eventos) && !empty($eventos)): ?>
                     <?php foreach ($eventos as $evento): ?>
                         <div class="event-card mb-4" data-event-id="<?php echo $evento['id']; ?>">
-                            <div class="card bg-dark text-white">
+                            <div class="card bg-dark text-white position-relative">
                                 <div class="card-body">
                                     <h5 class="card-title">
                                         <?php echo htmlspecialchars($evento['titol'] ?? 'Sin título'); ?>
@@ -113,7 +113,7 @@
                                             <i class="fas fa-heart"></i>
                                         </button>
                                         
-                                        <div class="rating-container d-inline-block ms-3">
+                                        <div class="rating-container d-inline-block">
                                             <?php for($i = 1; $i <= 5; $i++): ?>
                                                 <i class="fas fa-star rating-star" 
                                                    data-rating="<?php echo $i; ?>"
@@ -123,6 +123,17 @@
                                             <?php endfor; ?>
                                             <span class="average-rating ms-2">(<?php echo number_format($evento['average_rating'] ?? 0, 1); ?>)</span>
                                         </div>
+
+                                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                                            <div class="action-buttons">
+                                                <button class="event-action-btn edit-btn" onclick="editEvent(<?php echo $evento['id']; ?>)" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="event-action-btn delete-btn" onclick="deleteEvent(<?php echo $evento['id']; ?>)" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
