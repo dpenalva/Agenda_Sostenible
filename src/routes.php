@@ -13,5 +13,8 @@ $routes = [
     'admin/updateUser' => ['ctrlAdminUpdateUser', ['adminMiddleware']],
     'events' => 'ctrlEvents',
     'toggleEventLike' => 'ctrlToggleEventLike',
+    'admin/getEvent' => ['ctrlAdminGetEvent', ['adminMiddleware']],
+    'admin/updateEvent' => ['ctrlAdminUpdateEvent', ['adminMiddleware']],
+    'admin/deleteEvent' => ['ctrlAdminDeleteEvent', ['adminMiddleware']],
     // otras rutas...
 ]; 

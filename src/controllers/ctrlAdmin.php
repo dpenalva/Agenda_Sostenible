@@ -139,4 +139,130 @@ function ctrlAdminAddUser($request, $response, $container) {
         ]);
     }
     return $response;
+}
+
+function ctrlAdminGetEvent($request, $response, $container) {
+    try {
+        // Obtener y validar el ID
+        $eventId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        
+        if (!$eventId) {
+            throw new \Exception("ID de evento no válido o no proporcionado");
+        }
+
+        // Obtener el evento
+        $esdevenimentsModel = $container->esdeveniments();
+        $event = $esdevenimentsModel->get($eventId);
+
+        if (!$event) {
+            throw new \Exception("Evento no encontrado");
+        }
+
+        // Preparar la respuesta
+        $response->setJson();
+        $response->set('success', true);
+        $response->set('event', $event);
+
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('error', $e->getMessage());
+    }
+    
+    return $response;
+}
+
+function ctrlAdminUpdateEvent($request, $response, $container) {
+    try {
+        // Obtener datos del POST
+        $rawData = file_get_contents('php://input');
+        $data = json_decode($rawData, true);
+        
+        if (!$data) {
+            throw new \Exception("Datos no válidos");
+        }
+
+        // Validar ID
+        if (!isset($data['id'])) {
+            throw new \Exception("ID de evento no proporcionado");
+        }
+
+        // Actualizar evento
+        $esdevenimentsModel = $container->esdeveniments();
+        $esdevenimentsModel->update($data['id'], $data);
+
+        $response->setJson();
+        $response->set('success', true);
+        
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('error', $e->getMessage());
+    }
+    
+    return $response;
+}
+
+function ctrlAdminDeleteEvent($request, $response, $container) {
+    try {
+        // Obtener datos del POST
+        $rawData = file_get_contents('php://input');
+        $data = json_decode($rawData, true);
+        
+        if (!isset($data['id'])) {
+            throw new \Exception("ID de evento no proporcionado");
+        }
+
+        // Eliminar evento
+        $esdevenimentsModel = $container->esdeveniments();
+        $esdevenimentsModel->delete($data['id']);
+
+        $response->setJson();
+        $response->set('success', true);
+        
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('error', $e->getMessage());
+    }
+    
+    return $response;
+}
+
+function ctrlAdminCreateEvent($request, $response, $container) {
+    try {
+        // Obtener datos del POST
+        $rawData = file_get_contents('php://input');
+        $data = json_decode($rawData, true);
+        
+        if (!$data) {
+            throw new \Exception("Datos no válidos");
+        }
+
+        // Validar campos requeridos
+        if (empty($data['titol'])) {
+            throw new \Exception("El título es obligatorio");
+        }
+        if (empty($data['data_esdeveniment'])) {
+            throw new \Exception("La fecha es obligatoria");
+        }
+        if (empty($data['hora_esdeveniment'])) {
+            throw new \Exception("La hora es obligatoria");
+        }
+
+        // Crear evento
+        $esdevenimentsModel = $container->esdeveniments();
+        $newEventId = $esdevenimentsModel->create($data);
+
+        $response->setJson();
+        $response->set('success', true);
+        $response->set('eventId', $newEventId);
+        
+    } catch (\Exception $e) {
+        $response->setJson();
+        $response->set('success', false);
+        $response->set('error', $e->getMessage());
+    }
+    
+    return $response;
 } 

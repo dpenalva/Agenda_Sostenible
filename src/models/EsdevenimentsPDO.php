@@ -84,27 +84,31 @@ class EsdevenimentsPDO {
      */
     public function get($id) {
         try {
-            $query = "SELECT 
-                        e.*,
-                        u.nom_usuari as creador_nom,
-                        u.imatge_perfil as creador_avatar
-                    FROM esdeveniments e
-                    INNER JOIN usuaris u ON e.usuari_id = u.id
-                    WHERE e.id = :id";
-
-            $stmt = $this->sql->prepare($query);
+            $stmt = $this->sql->prepare("
+                SELECT 
+                    id,
+                    titol,
+                    descripcio,
+                    data_esdeveniment,
+                    hora_esdeveniment,
+                    longitud,
+                    latitud,
+                    visibilitat_esdeveniment
+                FROM esdeveniments 
+                WHERE id = :id
+            ");
+            
             $stmt->execute([':id' => $id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
             
-            $event = $stmt->fetch(\PDO::FETCH_ASSOC);
-            
-            if (!$event) {
-                throw new \Exception("Evento no encontrado");
+            if (!$result) {
+                throw new \Exception("No se encontró el evento con ID: $id");
             }
             
-            return $event;
+            return $result;
+            
         } catch (\PDOException $e) {
-            error_log("Error en get: " . $e->getMessage());
-            throw new \Exception("Error al obtener el evento");
+            throw new \Exception("Error al obtener el evento: " . $e->getMessage());
         }
     }
 
@@ -120,34 +124,29 @@ class EsdevenimentsPDO {
                 hora_esdeveniment, 
                 longitud, 
                 latitud, 
-                visibilitat_esdeveniment,
-                tipus_esdeveniment_id,
-                id_usuari
+                visibilitat_esdeveniment
             ) VALUES (
-                :titol, 
-                :descripcio, 
-                :data_esdeveniment, 
-                :hora_esdeveniment, 
-                :longitud, 
-                :latitud, 
-                :visibilitat_esdeveniment,
-                :tipus_esdeveniment_id,
-                :id_usuari
+                :titol,
+                :descripcio,
+                :data_esdeveniment,
+                :hora_esdeveniment,
+                :longitud,
+                :latitud,
+                :visibilitat_esdeveniment
             )";
 
             $stmt = $this->sql->prepare($sql);
+            
             $stmt->execute([
                 ':titol' => $data['titol'],
-                ':descripcio' => $data['descripcio'],
+                ':descripcio' => $data['descripcio'] ?? '',
                 ':data_esdeveniment' => $data['data_esdeveniment'],
                 ':hora_esdeveniment' => $data['hora_esdeveniment'],
-                ':longitud' => $data['longitud'],
-                ':latitud' => $data['latitud'],
-                ':visibilitat_esdeveniment' => $data['visibilitat_esdeveniment'],
-                ':tipus_esdeveniment_id' => $data['tipus_esdeveniment_id'],
-                ':id_usuari' => $data['id_usuari']
+                ':longitud' => $data['longitud'] ?? null,
+                ':latitud' => $data['latitud'] ?? null,
+                ':visibilitat_esdeveniment' => $data['visibilitat_esdeveniment'] ?? '0'
             ]);
-
+            
             return $this->sql->lastInsertId();
         } catch (\PDOException $e) {
             throw new \Exception("Error al crear el evento: " . $e->getMessage());
@@ -311,5 +310,46 @@ class EsdevenimentsPDO {
     public function getAverageRating($eventId) {
         // Por ahora retornamos 0 como valor por defecto
         return 0;
+    }
+
+    public function update($id, $data) {
+        try {
+            $sql = "UPDATE esdeveniments SET 
+                    titol = :titol,
+                    descripcio = :descripcio,
+                    data_esdeveniment = :data_esdeveniment,
+                    hora_esdeveniment = :hora_esdeveniment,
+                    longitud = :longitud,
+                    latitud = :latitud,
+                    visibilitat_esdeveniment = :visibilitat_esdeveniment
+                    WHERE id = :id";
+
+            $stmt = $this->sql->prepare($sql);
+            
+            $stmt->execute([
+                ':id' => $id,
+                ':titol' => $data['titol'],
+                ':descripcio' => $data['descripcio'],
+                ':data_esdeveniment' => $data['data_esdeveniment'],
+                ':hora_esdeveniment' => $data['hora_esdeveniment'],
+                ':longitud' => $data['longitud'],
+                ':latitud' => $data['latitud'],
+                ':visibilitat_esdeveniment' => $data['visibilitat_esdeveniment']
+            ]);
+            
+            return true;
+        } catch (\PDOException $e) {
+            throw new \Exception("Error al actualizar el evento: " . $e->getMessage());
+        }
+    }
+
+    public function delete($id) {
+        try {
+            $stmt = $this->sql->prepare("DELETE FROM esdeveniments WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            return true;
+        } catch (\PDOException $e) {
+            throw new \Exception("Error al eliminar el evento: " . $e->getMessage());
+        }
     }
 } 
