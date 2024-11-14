@@ -123,6 +123,9 @@ ini_set('display_errors', 1);
     case "admin/createEvent":
         $response = ctrlAdminCreateEvent($request, $response, $container);
         break;
+    case 'eventDetails':
+        $response = ctrlEventDetails($request, $response, $container);
+        break;
     default:
         $response->set("error", "Ruta no encontrada");
         $response->setTemplate("404.php");
