@@ -63,6 +63,53 @@ window.toggleLike = async function(eventId) {
     }
 };
 
+// Función para eliminar evento
+async function deleteEvent(eventId) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('?r=deleteEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ eventId })
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Eliminar el evento del DOM con animación
+            const eventCard = document.querySelector(`.event-card[data-event-id="${eventId}"]`);
+            if (eventCard) {
+                eventCard.style.transition = 'opacity 0.3s ease';
+                eventCard.style.opacity = '0';
+                setTimeout(() => {
+                    eventCard.remove();
+                    // Verificar si no hay más eventos y mostrar mensaje
+                    const remainingEvents = document.querySelectorAll('.event-card');
+                    if (remainingEvents.length === 0) {
+                        const eventsFeed = document.querySelector('.events-feed');
+                        if (eventsFeed) {
+                            eventsFeed.innerHTML = `
+                                <div class="text-center text-muted mt-4">
+                                    <p>No hay eventos disponibles en este momento.</p>
+                                </div>`;
+                        }
+                    }
+                }, 300);
+            }
+        } else {
+            throw new Error(data.message || 'Error al eliminar el evento');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al eliminar el evento: ' + error.message);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Función para crear eventos
     function initializeEventCreation() {

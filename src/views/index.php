@@ -234,13 +234,12 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="button" id="saveEventButton" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveEventButton">Crear Evento</button>
-                </div>
+                    <button type="button" id="saveEventButton" class="btn btn-primary">Crear evento</button>
+                    </div>
             </div>
         </div>
     </div>
