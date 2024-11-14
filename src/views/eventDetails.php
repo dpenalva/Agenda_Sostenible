@@ -92,7 +92,7 @@
 
                 <!-- Botones de acción -->
                 <div class="neo-actions">
-                    <a href="?r=events" class="neo-btn back">
+                    <a href="/" class="neo-btn back">
                         <i class="fas fa-arrow-left"></i> Volver
                     </a>
                     <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $event['id_usuari']): ?>

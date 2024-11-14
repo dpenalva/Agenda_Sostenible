@@ -46,14 +46,12 @@
             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                 <div class="post-creation-area">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <!-- Botón para crear evento -->
                         <button type="button" class="create-event-button" data-bs-toggle="modal" data-bs-target="#createEventModal">
                             <i class="fas fa-plus me-2"></i>Crear Evento
                         </button>
                         
-                        <!-- Buscador de eventos -->
                         <div class="search-container">
-                            <input type="text" id="searchEvents" class="search-bar" placeholder="Buscar eventos...">
+                            <input type="text" id="searchEvents" class="search-bar" placeholder="Buscar eventos..." autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -236,6 +234,7 @@
                                 </label>
                             </div>
                         </div>
+                        <button type="button" id="saveEventButton" class="btn btn-primary">Guardar</button>
                     </form>
                 </div>
                 <div class="modal-footer">

@@ -173,7 +173,6 @@ function ctrlEventDetails($request, $response, $container) {
     }
 
     return $response;
-} 
 }
 
 function ctrlEventsGetEvent($request, $response, $container) {
@@ -201,4 +200,4 @@ function ctrlEventsGetEvent($request, $response, $container) {
     }
     
     return $response;
-} 
+}
