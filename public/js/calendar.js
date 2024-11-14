@@ -58,6 +58,14 @@ class Calendar {
             dayDiv.className = 'day';
             dayDiv.textContent = day;
 
+            // Verificar si es el día actual
+            const today = new Date();
+            if (day === today.getDate() && 
+                this.currentMonth === today.getMonth() && 
+                this.currentYear === today.getFullYear()) {
+                dayDiv.classList.add('today');
+            }
+
             if (this.hasEventsOnDate(day)) {
                 dayDiv.classList.add('has-favorite-event');
             }
