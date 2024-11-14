@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/web.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
     <div class="container-fluid d-flex main-content-wrapper">
@@ -88,6 +89,24 @@
                             <?php echo nl2br(htmlspecialchars($event['descripcio'])); ?>
                         </div>
                     </div>
+
+                    <!-- Ubicación -->
+                    <?php if (!empty($event['latitud']) && !empty($event['longitud'])): ?>
+                        <div class="neo-card description-card">
+                            <h3 class="location-title">Ubicación</h3>
+                            <div id="event-map"></div>
+                            <div class="coordinates">
+                                Lat: <?php echo number_format($event['latitud'], 6); ?>, 
+                                Long: <?php echo number_format($event['longitud'], 6); ?>
+                            </div>
+                            <a href="https://www.google.com/maps?q=<?php echo $event['latitud']; ?>,<?php echo $event['longitud']; ?>" 
+                               class="google-maps-btn" 
+                               target="_blank">
+                                <i class="fas fa-map-marked-alt"></i>
+                                Ver en Google Maps
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Botones de acción -->
@@ -108,5 +127,56 @@
     </div>
 
     <script src="/js/events.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        <?php if (!empty($event['latitud']) && !empty($event['longitud'])): ?>
+            // Inicializar el mapa
+            const map = L.map('event-map', {
+                zoomControl: false,
+                scrollWheelZoom: false,
+                dragging: true
+            }).setView([
+                <?php echo $event['latitud']; ?>, 
+                <?php echo $event['longitud']; ?>
+            ], 15);
+
+            // Estilo oscuro del mapa
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Control de zoom en la esquina inferior derecha
+            L.control.zoom({
+                position: 'bottomright'
+            }).addTo(map);
+
+            // Marcador personalizado con color turquesa
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: '<i class="fas fa-map-marker-alt" style="color: #53d5cd; font-size: 24px;"></i>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 24],
+                popupAnchor: [0, -24]
+            });
+
+            // Añadir marcador
+            L.marker([
+                <?php echo $event['latitud']; ?>, 
+                <?php echo $event['longitud']; ?>
+            ], {
+                icon: customIcon
+            }).addTo(map);
+
+            // Habilitar zoom al pasar el ratón
+            map.on('mouseenter', function() {
+                map.scrollWheelZoom.enable();
+            });
+
+            map.on('mouseleave', function() {
+                map.scrollWheelZoom.disable();
+            });
+        <?php endif; ?>
+    </script>
 </body>
 </html> 
