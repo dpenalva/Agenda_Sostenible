@@ -12,7 +12,7 @@
             .sidebar {
                 position: relative !important;
                 left: 0 !important;
-                width: 250px !important;
+                width: 350px !important;
             }
             
             .content {
@@ -154,9 +154,14 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-dark">
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="menu-overlay"></div>
+
     <div class="container-fluid d-flex main-content-wrapper">
-        <!-- Sidebar -->
+        <!-- Sidebar Izquierdo -->
         <aside class="sidebar p-4">
             <div class="icon mb-4">
                 <img src="/uploads/images/logo1.png" alt="Logo" class="logo1">
@@ -165,11 +170,13 @@
                 <a href="/" class="nav-link text-white"><i class="fas fa-home"></i> Home</a>
                 <a href="?r=events" class="nav-link text-white"><i class="fas fa-calendar-alt"></i> Events</a>
                 <a href="?r=profile" class="nav-link text-white"><i class="fas fa-user"></i> Profile</a>
-                <a href="?r=admin" class="nav-link text-white active"><i class="fas fa-cog"></i> Panel Admin</a>
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <a href="/?r=admin" class="nav-link text-white">
+                        <i class="fas fa-cog"></i> Panel Admin
+                    </a>
+                <?php endif; ?>
             </nav>
-            <button class="btn logout-btn mt-4 w-100" onclick="window.location.href='/?r=logout'">
-                Cerrar Sesión
-            </button>
+            <button id="logout-button" class="btn logout-btn mt-4 w-100" onclick="window.location.href='/?r=logout'">Cerrar Sesión</button>
         </aside>
 
         <!-- Contenido Principal -->
@@ -497,6 +504,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/menu.js"></script>
     <script src="/js/admin.js"></script>
 </body>
 </html> 

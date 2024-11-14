@@ -12,7 +12,7 @@
     <link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.8/main.min.css' rel='stylesheet' />
 </head>
 
-<body>
+<body class="bg-dark">
     <!-- Botón de menú y overlay deben ser los primeros elementos -->
     <button class="menu-toggle">
         <i class="fas fa-bars"></i>

@@ -10,7 +10,12 @@
     <link href="/css/web.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-dark">
+    <button class="menu-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="menu-overlay"></div>
+
     <div class="container-fluid d-flex main-content-wrapper">
         <!-- Sidebar Izquierdo -->
         <aside class="sidebar p-4">
@@ -171,10 +176,9 @@
         </aside>
     </div>
 
-    <script src="/js/menu.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/menu.js"></script>
     <script src="/js/profile.js"></script>
 </body>
 </html>
