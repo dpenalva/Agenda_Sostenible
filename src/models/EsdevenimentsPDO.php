@@ -84,6 +84,26 @@ class EsdevenimentsPDO {
      */
     public function get($id) {
         try {
+            $query = "SELECT 
+                e.*,
+                (SELECT COUNT(*) FROM favorit WHERE esdeveniment_id = e.id) as likes_count
+            FROM esdeveniments e
+            WHERE e.id = :id";
+            
+            $stmt = $this->sql->prepare($query);
+            $stmt->execute(['id' => $id]);
+            
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+            
+            if (!$result) {
+                throw new \Exception("Evento no encontrado");
+            }
+            
+            return $result;
+            
+        } catch (\PDOException $e) {
+            error_log("Error en get: " . $e->getMessage());
+            throw new \Exception("Error al obtener el evento");
             $stmt = $this->sql->prepare("
                 SELECT e.*, 
                        (SELECT COUNT(*) FROM favorit WHERE esdeveniment_id = e.id) as likes_count,

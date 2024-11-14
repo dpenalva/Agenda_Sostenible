@@ -146,6 +146,36 @@ function ctrlDeleteEvent($request, $response, $container) {
     }
 }
 
+function ctrlEventDetails($request, $response, $container) {
+    try {
+        // Usar filter_input directamente
+        $eventId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        
+        if (!$eventId) {
+            throw new \Exception("ID de evento no válido");
+        }
+
+        $esdevenimentsModel = $container->esdeveniments();
+        $event = $esdevenimentsModel->get($eventId);
+        
+        if (!$event) {
+            throw new \Exception("Evento no encontrado");
+        }
+
+        $response->set("title", $event['titol']);
+        $response->set("event", $event);
+        $response->setTemplate("eventDetails.php");
+
+    } catch (\Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+        header("Location: ?r=events");
+        exit;
+    }
+
+    return $response;
+} 
+}
+
 function ctrlEventsGetEvent($request, $response, $container) {
     try {
         if (!isset($_GET['id'])) {

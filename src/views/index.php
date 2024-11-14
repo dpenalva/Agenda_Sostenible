@@ -106,35 +106,49 @@
                                         <?php echo isset($evento['visibilitat_esdeveniment']) && $evento['visibilitat_esdeveniment'] ? 'Público' : 'Privado'; ?>
                                     </div>
                                     <div class="event-interactions mt-3">
-                                        <button 
-                                            class="like-button <?php echo isset($evento['is_liked']) && $evento['is_liked'] ? 'liked' : ''; ?>"
-                                            data-event-id="<?php echo $evento['id']; ?>"
-                                            onclick="toggleLike(<?php echo $evento['id']; ?>)"
-                                        >
-                                            <i class="fas fa-heart"></i>
-                                        </button>
-                                        
-                                        <div class="rating-container d-inline-block">
-                                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                                <i class="fas fa-star rating-star" 
-                                                   data-rating="<?php echo $i; ?>"
-                                                   onclick="rateEvent(<?php echo $evento['id']; ?>, <?php echo $i; ?>)"
-                                                   style="color: <?php echo (isset($evento['user_rating']) && $evento['user_rating'] >= $i) ? '#ffc107' : '#6c757d'; ?>">
-                                                </i>
-                                            <?php endfor; ?>
-                                            <span class="average-rating ms-2">(<?php echo number_format($evento['average_rating'] ?? 0, 1); ?>)</span>
-                                        </div>
-
-                                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                                            <div class="event-actions">
-                                                <button class="btn btn-sm btn-link text-primary" onclick="loadEventData(<?php echo $evento['id']; ?>)">
-                                                    <i class="fas fa-edit"></i>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center flex-grow-1">
+                                                <button 
+                                                    class="like-button me-3 <?php echo isset($evento['is_liked']) && $evento['is_liked'] ? 'liked' : ''; ?>"
+                                                    data-event-id="<?php echo $evento['id']; ?>"
+                                                    onclick="toggleLike(<?php echo $evento['id']; ?>)"
+                                                >
+                                                    <i class="fas fa-heart"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-link text-danger" onclick="deleteEvent(<?php echo $evento['id']; ?>)">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                
+                                                <div class="rating-container d-inline-flex align-items-center">
+                                                    <?php for($i = 1; $i <= 5; $i++): ?>
+                                                        <i class="fas fa-star rating-star" 
+                                                           data-rating="<?php echo $i; ?>"
+                                                           onclick="rateEvent(<?php echo $evento['id']; ?>, <?php echo $i; ?>)"
+                                                           style="color: <?php echo (isset($evento['user_rating']) && $evento['user_rating'] >= $i) ? '#ffc107' : '#6c757d'; ?>">
+                                                        </i>
+                                                    <?php endfor; ?>
+                                                    <span class="average-rating ms-2">
+                                                        (<?php echo number_format($evento['average_rating'] ?? 0, 1); ?>)
+                                                    </span>
+                                                    
+                                                    
+                                                </div>
+                                                <a href="?r=eventDetails&id=<?php echo $evento['id']; ?>" 
+                                                       class="btn btn-outline-primary btn-sm ms-3">
+                                                        <i class="fas fa-info-circle"></i> Más detalles
+                                                </a>
                                             </div>
-                                        <?php endif; ?>
+
+                                            <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                                                <div class="event-actions ms-3">
+                                                    <button class="btn btn-sm btn-link text-primary" 
+                                                            onclick="loadEventData(<?php echo $evento['id']; ?>)">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-link text-danger" 
+                                                            onclick="deleteEvent(<?php echo $evento['id']; ?>)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
