@@ -1,15 +1,15 @@
-# Agenda Figuerenca
+# Agenda Sostenible
 
 ## 📝 Descripción
-Agenda Figuerenca es una aplicación web para la gestión de eventos locales en Figueres. Permite a los usuarios crear, gestionar y participar en eventos, con funcionalidades específicas para administradores y usuarios regulares.
+Agenda Sostenible/Figuerenca es una aplicación web para la gestión de eventos locales en Figueres. Permite a los usuarios crear, gestionar y participar en eventos, con funcionalidades específicas para administradores y usuarios regulares.
 
 ## 🛠 Tecnologías Utilizadas
-- PHP 7.4+
+- PHP
 - MySQL
 - Bootstrap 5
 - JavaScript
 - HTML5/CSS3
-- PDO para conexiones a base de datos
+- Emeset Lite
 
 ## 🗄 Estructura de la Base de Datos
 
@@ -130,11 +130,5 @@ composer install
 ## 🔒 Seguridad
 - Contraseñas hasheadas
 - Validación de formularios
-- Protección contra SQL injection mediante PDO
 - Middleware de autenticación
 
-## 📄 Licencia
-Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para más detalles.
-
-## 🤝 Contribuciones
-Las contribuciones son bienvenidas. Por favor, lee CONTRIBUTING.md para detalles sobre nuestro código de conducta y el proceso para enviarnos pull requests.
