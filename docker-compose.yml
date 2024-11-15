@@ -9,6 +9,7 @@ services:
       context: .
       dockerfile: Build/server/Dockerfile
     image: agenda_php
+    restart: always
     #Mapeja la carpeta del projecte a la carpeta /var/www/html
     networks:
       - network_docker
@@ -21,6 +22,7 @@ services:
       context: .
       dockerfile: Build/mysql/Dockerfile
     image: agenda_mysql
+    restart: always
     #Variables d'entorn per la bdd.
     environment:
       MYSQL_ROOT_PASSWORD: "12345"
