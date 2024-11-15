@@ -1,2 +1,2 @@
 FROM mysql:latest
-COPY ./BBDD/init.sql /docker-entrypoint-initdb.d/
+COPY Build/BBDD/init.sql /docker-entrypoint-initdb.d/

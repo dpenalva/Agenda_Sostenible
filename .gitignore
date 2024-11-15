@@ -2,3 +2,4 @@ BBDD
 db
 docker-compose.yml
 uploads
+*.tar
