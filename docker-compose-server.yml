@@ -3,24 +3,26 @@ services:
     container_name: agenda_php
     #Mapeig de ports
     ports:
-      - "8080:80"
+      - "80:80"
+    image: agenda_figuerenca_mysql
     #Construeix la imatge del contenidor segons el Dockerfile que hi ha a mysql
     build: 
       context: .
       dockerfile: Build/server/Dockerfile
-    image: agenda_php
     #Mapeja la carpeta del projecte a la carpeta /var/www/html
+    volumes:
+      - .:/var/www/html
     networks:
       - network_docker
   mysql:
     #Mapeig de ports
     ports:
       - "3306:3306"
+    image: agenda_figuerenca_mysql
     #Construeix la imatge del contenidor segons el Dockerfile que hi ha a mysql
     build:
       context: .
       dockerfile: Build/mysql/Dockerfile
-    image: agenda_mysql
     #Variables d'entorn per la bdd.
     environment:
       MYSQL_ROOT_PASSWORD: "12345"
